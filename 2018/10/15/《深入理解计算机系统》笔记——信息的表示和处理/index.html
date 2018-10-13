@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>《深入了解计算机系统》笔记——计算机系统漫游 · ChristmasError-blog</title>
+    <title>《深入了解计算机系统》笔记——信息的表示和处理 · ChristmasError-blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -217,7 +217,7 @@
                 <a href="/" >ChristmasError-Blog</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">《深入了解计算机系统》笔记——计算机系统漫游</a>
+                <a href="#" class="post-name">《深入了解计算机系统》笔记——信息的表示和处理</a>
             </div>
     </div>
     
@@ -247,7 +247,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            《深入了解计算机系统》笔记——计算机系统漫游
+            《深入了解计算机系统》笔记——信息的表示和处理
             <!-- 404 -->
             
         </h1>
@@ -272,12 +272,12 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">2.5k</span>阅读时长: <span class="post-count reading-time">8 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">4 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2018/10/13</span>
+                    <span class="post-intro-time">2018/10/15</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -401,73 +401,56 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="1-计算机系统"><a href="#1-计算机系统" class="headerlink" title="1.计算机系统"></a>1.计算机系统</h1><p>由硬件与软件组成，他们共同工作来运行程序。</p>
-<h1 id="2-信息的表示"><a href="#2-信息的表示" class="headerlink" title="2.信息的表示"></a>2.信息的表示</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"Hello World\n"</span>);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;    <span class="comment">//c标准规定建议main函数返回值为int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编写程序时将上面的 Hello World 程序保存在一个 hello.c 的文件中，他将以<strong>字序列</strong>方式存储在文件中。</p>
+        <ol>
+<li>信息的存储</li>
+<li>十六进制表示法</li>
+<li>字</li>
+<li>数据大小</li>
+<li>寻址和字节顺序</li>
+<li>数据类型</li>
+<li>字符串的表示</li>
+<li>代码的表示</li>
+</ol>
+<h1 id="信息的存储"><a href="#信息的存储" class="headerlink" title="信息的存储"></a>信息的存储</h1><p><strong>信息</strong>是客观事物的反映，是经过处理加工后得出的<strong>数据</strong>。<br><strong>数据</strong>是客观事物的记录。<br>计算机内所有的信息均以二进制的形式表示，也就是由值0和值1组成的序列。<br>大多数计算机使用8<strong>位</strong>的块(字节)，来作为最小的可寻址的存储器单位，而不是在存储器中访问单独的位。</p>
 <blockquote>
-<p><strong>字</strong>：由若干个字节构成，字的位数叫做字长，不同档次的机器有不同的字长。例如一台8位机，它的1个字就等于1个字节，字长为8位。如果是一台16位机，那么，它的1个字就由2个字节构成，字长为16位。在32位操作系统当中，一个字是4个字节，字是计算机进行数据处理和运算的单位。</p>
+<p>（”位(bit)”是电子计算机中最小的数据单位，每一位的状态只能是0或1。8个二进制位构成1个”字节(Byte)”）</p>
 </blockquote>
+<p><strong>也就是说，我们访问计算机最小的单位是八个位构成的字节，而不是值0或值1的单个位。</strong><br>程序会将存储器视为一个非常大的字节数组，<strong>称为虚拟存储器</strong>（virtual memory）。存储器的每一个字节都由唯一的数字来标识，也就是我们说的<strong>地址</strong>（address），所有可能地址的集合称为<strong>虚拟地址空间</strong>（virtual address space）</p>
+<h1 id="十六进制表示法"><a href="#十六进制表示法" class="headerlink" title="十六进制表示法"></a>十六进制表示法</h1><p>在二进制表示法中，它的值域为 00000000——11111111；<br>如果用十进制表示就是0——255。<br>但二进制表示法太冗长，而十进制表示法与<strong>位模式</strong>的互相转化又比较麻烦对于用来表示计算机的位模式来说都不是很方便。</p>
 <blockquote>
-<p><strong>字节</strong>：8个二进制位构成1个”字节(Byte)”，它是存储空间的基本计量单位。1个字节可以储存1个英文字母或者半个汉字，换句话说，1个汉字占据2个字节的存储空间。</p>
+<p>位模式： 计算机中所有二进制的0、1代码所组成的数字串</p>
 </blockquote>
+<p>这时候 十六进制数产生了，十六进制使用数字‘0’~ ‘9’，以及字符 ‘A’~ ‘F’来对应表示‘10’~‘15’。一般是 0x 或者 0X 开头。逢16进1。</p>
 <blockquote>
-<p><strong>位</strong>：”位(bit)”是电子计算机中最小的数据单位。每一位的状态只能是0或1。</p>
+<p>比如十进制数 175，我们用十六进制表示为 0xAF。</p>
 </blockquote>
-<p>我们将hello.c文件变为用ASCII码表示：<br><img src="https://img-blog.csdn.net/20181013170122218?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>例如：0x23对应表示的是‘#’字符<br>hello.c文件等这类由ADSCII码组成的文件称为“文本文件”，其他称之为“二进制文件”。</p>
-<h3 id="2-1系统中所有的信息都是由位-上下文构成"><a href="#2-1系统中所有的信息都是由位-上下文构成" class="headerlink" title="2.1系统中所有的信息都是由位+上下文构成"></a>2.1系统中所有的信息都是由位+上下文构成</h3><p>包括磁盘文件、存储器中的程序，存储器中存放的用户数据以及网络上传送的数据都是由一串位来表示。而区分不同数据对象的唯一方法就是他们对应的<strong>上下文</strong>，在不同的上下文中，一个同样的字节序列可能表示不同的内容。</p>
-<h1 id="3-程序的编译"><a href="#3-程序的编译" class="headerlink" title="3.程序的编译"></a>3.程序的编译</h1><p>我们将要将 hello.c 变成一个可执行的目标程序，他就必须要经过 <strong>预处理器cpp、编译器ccl、汇编器as、链接器ld</strong> 的处理。</p>
-<p>1.预处理阶段：预处理器 cpp 根据以字符 # 开头的命令，修改原始的 C 程序、得到新的hello.i</p>
-<p>2.编译阶段：编译器 ccl 将文本文件 hello.i 翻译成文本文件 hello.s，它包含一个汇编语言程序，汇编语言程序中的每条语句都以一种标准的文本格式确切的描述一条低级机器语言指令。汇编语言能为不同高级语言的不同编译器提供通用的输出语言。</p>
-<p>3.汇编阶段：汇编器 as 将hello.s 翻译成机器语言指令，把这些指令打包成一种叫做可重定位目标程序的格式，并将结果保存在目标文件 hello.o 中，hello.o 文件是一个二进制文件，它的字节编码是机器预言指令而不是字符。如果我们用文本编辑器打开 hello.o 文件，将会是一堆乱码。</p>
-<p>4.链接阶段：在 hello.c 程序中，程序调用了 printf 函数，printf 函数存在于一个名为 printf.o 的单独的预编译好了的目标文件中，而这个文件必须以某种方式合并到我们的 hello.o 程序中。链接器 ld 就是负责处理这种合并，结果就得到一个 hello 文件，它是一个可执行的目标程序。</p>
+<h1 id="字"><a href="#字" class="headerlink" title="字"></a>字</h1><p>　计算机进行数据处理时，一次存取、加工和传送的数据长度称为<strong>字</strong>（word），一个字通常由<strong>一个或多个（一般是字节的整数位）字节</strong>构成，字的位数叫做<strong>字长</strong>（word size），每台计算机都有一个字长，用来指明整数和指针数据的<strong>标称大小</strong>（nominal size）。 
+　</p>
 <blockquote>
-<p>过程：hello.c-&gt;hello.i-&gt;hello.s-&gt;hello</p>
+<p>一个或多个<strong>字节</strong>组成一个<strong>字</strong>。</p>
 </blockquote>
-<h1 id="4-程序的运行"><a href="#4-程序的运行" class="headerlink" title="4.程序的运行"></a>4.程序的运行</h1><p>hello.c经过上面的过程编译已经变为了hello程序放在了磁盘上。<br>图为书中程序运行的过程<br><img src="https://img-blog.csdn.net/201810131716207?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdn.net/20181013171607525?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>图内出现名称解析：</p>
+<p>字长是CPU的主要技术指标之一，指的是CPU一次能并行处理的二进制位数，字长总是8的整数倍，PC机的字长为16位（早期），32位，64位。</p>
 <blockquote>
-<p>1.总线：<strong>贯穿整个系统的一组电子管道</strong>，通常被设计成用来传送定长的字节块，也就是字。字的大小与系统相关，比如在32位操作系统当中，一个字是4个字节。</p>
+<p>查看处理器位数方法： 打开命令提示符，然后输入 systeminfo，可以看到处理器的位数是 64 位</p>
 </blockquote>
+<h1 id="数据大小"><a href="#数据大小" class="headerlink" title="数据大小"></a>数据大小</h1><p><img src="https://img-blog.csdn.net/20181013181650752?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>在编程时，考虑到系统的移植性，要注意不同位数下的数据类型的字节数差异。</p>
+<h1 id="寻址和字节顺序"><a href="#寻址和字节顺序" class="headerlink" title="寻址和字节顺序"></a>寻址和字节顺序</h1><p>对于跨越多个字节的程序对象（程序对象指令、数据或者控制信息等）来说，我们需要制定两个规则：</p>
+<p>　　　　1、这个对象的地址是什么</p>
+<p>　　　　2、在存储器中如何排列这些字节<br><strong>而在几乎所有的机器上，多字节对象都被存储为<em>连续的字节序列</em>，对象的地址为所使用字节中最小的地址。</strong><br>他们都遵循两个排列规则：<br><strong>小端法</strong>：从最低有效字节到最高有效字节的顺序存储对象（最低有效字节在最前面）</p>
+<p><strong>大端法</strong>：和小端法相反。<br><img src="https://img-blog.csdn.net/20181013182120855?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
 <blockquote>
-<p>　2. I/O设备：<strong>输入/输出（I/O）设备是系统与外部世界联系通道</strong>，图有4个I/O设备(鼠标 键盘 显示器 磁盘)。每一个I/O设备都通过一个控制器或者适配器与I/O总线相连。控制器是置于I/O设备本身的或者系统的主印刷电路板（通常称为主板）上的芯片组，而适配器则是一块插在主板插槽上的卡。无论如何，它们的功能都是在 I/O 总线和 I/O 设备之间传递信息。</p>
+<p>可以看到，数据的存储是连续的，如”0x100”~”0x103”。</p>
 </blockquote>
+<p>但由于排列字节的方式有两种，那么这就产生问题：当小端法机器产生的数据被发送到大端法机器或者反方向发送的时，接收程序里的字节成了反序。<br>因此网络应用程序的代码编写必须遵循已建立的字节顺序的规则，以确保发送方和接收方都是遵循统一的网络标准防止数据错误。</p>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p><strong>数据类型的出现是为了把数据分成所需内存大小不同的数据</strong>。编程的时候对于不同情况定义不同数据类型，然后编译器需要申请内存（申请内存根据数据类型或大或小）。<br>那么根据上面的寻址和字节顺序，计算机在解释一个数据类型的值时主要有四个因素：<br><strong>位排列规则（大端或者小端）、起始位置、数据类型的字节数、数据类型的解释方式。</strong><br>对于特定的系统，前两种因素都是特定的；<br>而对于后两种因素（数据类型的字节数、数据类型的解释方式），会改变一个数据类型的值的最终结果，这就是<strong>强制类型转换</strong>。</p>
+<h1 id="字符串的表示"><a href="#字符串的表示" class="headerlink" title="字符串的表示"></a>字符串的表示</h1><p>在计算机中，对非数值的文字和其他符号进行处理时，要对文字和符号进行数字化，即用二进制编码来表示文字和符号。<br>常见的西文字符最常用到的编码方案有ASCII编码。</p>
 <blockquote>
-<p>　3.主存：它是<strong>计算机中的一个临时存储设备</strong>，在处理器执行程序的时候，用来存放程序和程序处理的数据。物理上来说，主存是由一组动态随机存取存储器（DRAM）组成的，逻辑上来说，它是一个线性的字节数组，每一个字节都有唯一的地址（即数组索引）。</p>
+<p>　　字符 ‘a’ 的 ASCII 码十进制值为 97，在计算机中用二进制表示就是 01100001</p>
 </blockquote>
+<h1 id="代码的表示"><a href="#代码的表示" class="headerlink" title="代码的表示"></a>代码的表示</h1><p>程序其实就是一个二进制序列的简单描述，编译器会帮我们将其翻译成对应的机器所认识的二进制序列。</p>
 <blockquote>
-<p>　4. 处理器：<strong>全称中央处理器（CPU）</strong>，是解释（或执行）存储在主存中指令的引擎。处理器的核心是一个字长的存储设备（或寄存器），简称程序计数器（PC），在任何时刻，它都会指向主存中的某条机器指令（即含有该条指令的地址）。从系统通电到断点，处理器一直在不断的执行程序计数器所指向指令，再更新程序计数器，使其指向下一条指令。处理器所做的操作是围绕主存、寄存器文件以及算术/逻辑单元（ALU）进行的，寄存器文件是一个小的存储设备，由一些1字长的寄存器组成，每个寄存器都有唯一的名字。ALU则计算新的数据和地址值。</p>
+<p>hello.c到hello.i到hello.o的转变<br>预处理器cpp-&gt;编译器ccl-&gt;汇编器as、</p>
 </blockquote>
-<h1 id="5-存储设备"><a href="#5-存储设备" class="headerlink" title="5.存储设备"></a>5.存储设备</h1><h3 id="5-1-从磁盘加载可执行文件到主存"><a href="#5-1-从磁盘加载可执行文件到主存" class="headerlink" title="5.1 从磁盘加载可执行文件到主存"></a>5.1 从磁盘加载可执行文件到主存</h3><p><img src="https://img-blog.csdn.net/20181013172045806?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<h3 id="5-2-将输出字符串从内存写到显示器"><a href="#5-2-将输出字符串从内存写到显示器" class="headerlink" title="5.2 将输出字符串从内存写到显示器"></a>5.2 将输出字符串从内存写到显示器</h3><p><img src="https://img-blog.csdn.net/20181013172236490?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<h3 id="5-3-高速缓存存储器"><a href="#5-3-高速缓存存储器" class="headerlink" title="5.3 高速缓存存储器"></a>5.3 高速缓存存储器</h3><p>数据的传输就是数据的复制过程。从写入到存储在寄存器文件花费很多时间来执行。<br>那么如何减少这种由数据复制所引起的开销呢？<br>机械原理，较大的存储设备比较小的存储设备运行的慢，我们通常会在<strong>高速缓存存储器（简称高速缓存）</strong>，作为暂时的集结区域，用来存放处理器近期可能会需要的信息<br><img src="https://img-blog.csdn.net/20181013172256223?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<h3 id="5-4-存储设备的金字塔结构"><a href="#5-4-存储设备的金字塔结构" class="headerlink" title="5.4 存储设备的金字塔结构"></a>5.4 存储设备的金字塔结构</h3><p><img src="https://img-blog.csdn.net/20181013172312636?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>每一层高速缓存都为下一级的高速缓存（如 L1为L2的高速缓存）。</p>
-<h1 id="6-操作系统"><a href="#6-操作系统" class="headerlink" title="6.操作系统"></a>6.操作系统</h1><p>我们可以把操作系统看成应用程序和硬件之间插入的一层软件，如图：<br><img src="https://img-blog.csdn.net/20181013172743290?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<blockquote>
-<p>操作系统的两个基本功能：</p>
-<p>　　①、防止硬件被失控的应用程序滥用。</p>
-<p>　　②、向应用程序提供简单一致的机制来控制复杂而又大相径庭的低级硬件设备。</p>
-</blockquote>
-<h1 id="7-进程"><a href="#7-进程" class="headerlink" title="7.进程"></a>7.进程</h1><p>当我们执行hello程序时，操作系统给我们提供一种假象，就好像系统只有这个程序在运行，而这种假象是通过进程的概念来实现的。<br>实际上，他们是并发的在运行，即一个进程的指令和另一个进程的指令是交错运行的。<br><img src="https://img-blog.csdn.net/20181013172907621?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>在单CPU系统中，系统在一个时刻只能运行一个进程，多CPU系统中，系统则是能够同时处理多个进程。但无论是单核还是多核，一个CPU只能并发的执行多个进程，这是通过处理器在进程间切换来实现的。而操作系统实现这种交错机制称为<strong>上下文切换</strong>。<br><img src="https://img-blog.csdn.net/20181013173246819?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<blockquote>
-<p>进程A与进程B在并发进行，进程通过上下文来回切换。</p>
-</blockquote>
-<h1 id="8-虚拟存储器"><a href="#8-虚拟存储器" class="headerlink" title="8.虚拟存储器"></a>8.虚拟存储器</h1><p>　虚拟存储器是一个抽象概念，它为每个进程提供了假象，即每个进程都在独占的使用主存。<br>　每个进程看到的是一致的存储器，称为虚拟地址空间。<img src="https://img-blog.csdn.net/2018101317353532?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"><br>　图中出现的名词解析：</p>
-<blockquote>
-<p><strong>程序代码和数据</strong>：对于所有进程来说，代码是从同一固定地址开始的，分别为0x08048000（32位）以及0x00400000（64位），紧接着是全局变量相对应的数据位置。</p>
-</blockquote>
-<blockquote>
-<p><strong>堆</strong>：代码和数据区后紧随的是运行时堆。代码和数据区是在进程一开始运行时就规定了大小，而当调用malloc和free这样的 C 标准库函数 时，堆可以在运行时动态的扩展和收缩。</p>
-</blockquote>
-<blockquote>
-<p><strong>共享库</strong>：存放像C标准库和数据库这样的代码和数据的区域。</p>
-</blockquote>
-<blockquote>
-<p><strong>栈</strong>：位于用户虚拟地址空间顶部，编译器用它来实现函数调用，用户栈在程序执行期间可以动态的扩展和收缩。当我们调用一个函数时，栈会增长；从一个函数返回时，栈会收缩。</p>
-</blockquote>
-<blockquote>
-<p> <strong>内核虚拟存储器</strong>：内核总是驻留在内存中，是操作系统的一部分，不允许应用程序读写这个区域的内容或者直接调用内核代码定义的函数。</p>
-</blockquote>
-<h1 id="9-计算机系统中抽象的重要性"><a href="#9-计算机系统中抽象的重要性" class="headerlink" title="9.计算机系统中抽象的重要性"></a>9.计算机系统中抽象的重要性</h1><p>　　抽象的使用是计算机科学中最重要的概念之一。例如，为一组函数规定一个简单的应用程序接口API就是一个很好的编程习惯。程序员无需了解它内部的工作原理便可以使用这些代码。这在Java当中的典型比如类的定义，C语言中的函数原型。<br>　　<img src="https://img-blog.csdn.net/2018101317392213?2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
-<h1 id="10-结束"><a href="#10-结束" class="headerlink" title="10.结束"></a>10.结束</h1><p>那么深入理解计算机系统第一章计算机系统的漫游将到此结束，之后的每一部分每一章会对之间内容详细讲解。</p>
 
     </article>
     <!-- license  -->
@@ -476,17 +459,12 @@ height:50vh;
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/10/15/《深入理解计算机系统》笔记——信息的表示和处理/" title= "《深入了解计算机系统》笔记——信息的表示和处理">
-                    <div class="nextTitle">《深入了解计算机系统》笔记——信息的表示和处理</div>
-                </a>
-            
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2018/10/10/归并排序——leetcode144排序链表/" title= "leetcode刷题笔记：144排序链表——归并排序">
-                    <div class="prevTitle">leetcode刷题笔记：144排序链表——归并排序</div>
+                <a href= "/2018/10/13/《深入理解计算机系统》笔记——计算机系统漫游/" title= "《深入了解计算机系统》笔记——计算机系统漫游">
+                    <div class="prevTitle">《深入了解计算机系统》笔记——计算机系统漫游</div>
                 </a>
             
         </li>
@@ -616,7 +594,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-计算机系统"><span class="toc-number">1.</span> <span class="toc-text">1.计算机系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-信息的表示"><span class="toc-number">2.</span> <span class="toc-text">2.信息的表示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1系统中所有的信息都是由位-上下文构成"><span class="toc-number">2.0.1.</span> <span class="toc-text">2.1系统中所有的信息都是由位+上下文构成</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-程序的编译"><span class="toc-number">3.</span> <span class="toc-text">3.程序的编译</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-程序的运行"><span class="toc-number">4.</span> <span class="toc-text">4.程序的运行</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-存储设备"><span class="toc-number">5.</span> <span class="toc-text">5.存储设备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-从磁盘加载可执行文件到主存"><span class="toc-number">5.0.1.</span> <span class="toc-text">5.1 从磁盘加载可执行文件到主存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-将输出字符串从内存写到显示器"><span class="toc-number">5.0.2.</span> <span class="toc-text">5.2 将输出字符串从内存写到显示器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-高速缓存存储器"><span class="toc-number">5.0.3.</span> <span class="toc-text">5.3 高速缓存存储器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-存储设备的金字塔结构"><span class="toc-number">5.0.4.</span> <span class="toc-text">5.4 存储设备的金字塔结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-操作系统"><span class="toc-number">6.</span> <span class="toc-text">6.操作系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-进程"><span class="toc-number">7.</span> <span class="toc-text">7.进程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-虚拟存储器"><span class="toc-number">8.</span> <span class="toc-text">8.虚拟存储器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-计算机系统中抽象的重要性"><span class="toc-number">9.</span> <span class="toc-text">9.计算机系统中抽象的重要性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-结束"><span class="toc-number">10.</span> <span class="toc-text">10.结束</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#信息的存储"><span class="toc-number">1.</span> <span class="toc-text">信息的存储</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#十六进制表示法"><span class="toc-number">2.</span> <span class="toc-text">十六进制表示法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字"><span class="toc-number">3.</span> <span class="toc-text">字</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数据大小"><span class="toc-number">4.</span> <span class="toc-text">数据大小</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#寻址和字节顺序"><span class="toc-number">5.</span> <span class="toc-text">寻址和字节顺序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数据类型"><span class="toc-number">6.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字符串的表示"><span class="toc-number">7.</span> <span class="toc-text">字符串的表示</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码的表示"><span class="toc-number">8.</span> <span class="toc-text">代码的表示</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
