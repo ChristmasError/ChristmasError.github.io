@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="ChristmasError">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="ChristmasError">
+    
+    <meta name="keywords" content="ChristmasError,ChristmasError-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>《深入了解计算机系统》笔记——程序性能优化 · ChristmasError-blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/smallHakase.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >ChristmasError-Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">《深入了解计算机系统》笔记——程序性能优化</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>ChristmasError-Blog</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            《深入了解计算机系统》笔记——程序性能优化
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "《深入了解计算机系统》">《深入了解计算机系统》</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">4.6k</span>阅读时长: <span class="post-count reading-time">18 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/10/17</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="程序性能优化"><a href="#程序性能优化" class="headerlink" title="程序性能优化"></a>程序性能优化</h1><p>编写高性能程序需要满足：<br>1.选择适当的算法和数据结构<br>2.必须编写出变异其能够有效优化以转化成高效可执行代码的源代码</p>
+<h2 id="程序优化"><a href="#程序优化" class="headerlink" title="程序优化"></a>程序优化</h2><p>程序优化的第一步就是消除不必要的工作：例如对同一个内存地址的反复读写我们要尽可能的减少，消除不必要的函数调用、条件测试和内存引用。这些都不依赖目标机器的任何具体属性而属于程序员可控范畴内的代码的改动。<br>为了使性能最大化，程序员和编译器都需要一个目标机器的模型，知名如何处理指令，以及哥哥操作的时序特性。</p>
+<p>研究程序的汇编代码表示是理解编译器以及产生的代码会如何运行是进行程序优化的最有效手段之一。通过用汇编语言写代码，这种间接的方法具有的优点是：虽然性能并非最好的，但是能保证代码能够在其他机器上运行。</p>
+<h2 id="优化编译器的能力和局限性"><a href="#优化编译器的能力和局限性" class="headerlink" title="优化编译器的能力和局限性"></a>优化编译器的能力和局限性</h2><p>现代编译器运用复杂精细的算法来确定一个程序中计算的是什么值，以及他们是如何使用的。编译器必须很小心地对程序只使用<strong>安全的优化</strong>，在C语言标准提供的保证下，优化后的得到的程序和未优化的版本有一样的行为，限制编译器只进行安全的优化，消除了造成不希望的运行时行为的一些可能的原因。<br>为了理解<strong>决定一种程序转换是否安全</strong>的难度，我们来看以下两个程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twiddle1</span><span class="params">(<span class="keyword">long</span> *xp,<span class="keyword">long</span> *yp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	*xp += *yp;</span><br><span class="line">	*xp += *yp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twiddle2</span><span class="params">(<span class="keyword">long</span> *xp,<span class="keyword">long</span> *yp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	*xp += <span class="number">2</span>* *yp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这两个函数有着看似相似的行为，他们都是将存储在指针yp位置的值两次相加到指针xp位置的值上。<br>一方面，函数twiddle2()效率更高，因为他只要求3次内存的引用（读<em>xp，读</em>yp，写*xp），相应的twiddle1()需要6次。<br>另一方面，当如果xp和yp指向同一位置的时候。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//指针xp和yp相同（指向同一地址）</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twiddle1</span><span class="params">(<span class="keyword">long</span> *xp,<span class="keyword">long</span> *yp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	*xp += *xp;</span><br><span class="line">	*xp += *xp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>twiddle1()的xp会变为原来的4倍。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*xp += <span class="number">2</span>* *xp;</span><br></pre></td></tr></table></figure>
+<p>twiddle2()的xp会变味原来的3倍。<br>因此，我们不能吧twiddle2()作为twiddle1()的优化版本。</p>
+<p>这种两个指针指向相同内存的情况称之为<strong>内存别名使用</strong>。在执行优化过程中，编译器必须假设不同的指针可能会指向同一内存同一个位置的情况。<br>例如对于以下，一个使用指针变量q和p的程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x=<span class="number">1000</span>, y=<span class="number">3000</span>;</span><br><span class="line">*q = y;		<span class="comment">//3000</span></span><br><span class="line">*p = x;     <span class="comment">//1000</span></span><br><span class="line">t1 = *q;</span><br></pre></td></tr></table></figure>
+<p>t1的值的情况是根据p和q的指向决定的。<br>当p，q指向同一内存位置，t1就等于1000；相反则为3000。<br>这造成了一个主要的<strong>妨碍优化的因素</strong>这也可能是严重限制编译器产生优化代码机会的程序的一个方面：如果不能确定指向，就必须假设所有情况，这就限制了优化策略。</p>
+<h2 id="表示程序性能"><a href="#表示程序性能" class="headerlink" title="表示程序性能"></a>表示程序性能</h2><p>度量标准——<strong>每元素的周期数（Cycles Per Element, CPE）</strong>。<br>CPE作为知道我们改进代码的方法，帮助我们在更细节层次上理解迭代程序的循环性能。</p>
+<blockquote>
+<p>处理器的活动顺序是用时钟控制的，时钟提供了某个频率的规律信号，通常用<strong>千兆赫兹（GHz）</strong>，即<strong>十亿周期/秒</strong>来表示。<br>例如：4GHz——表示处理器时钟运行频率为4 X 10^9个周期。</p>
+</blockquote>
+<p>许多过程含有在一组元素迭代的循环。<br>举一个例子：函数psum1()和psum2()计算都是一个长度为n的向量的<strong>前置和</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">psum1</span><span class="params">(<span class="keyword">float</span> a[],<span class="keyword">float</span> p[],<span class="keyword">long</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	p[<span class="number">0</span>] = a[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span> ;i &lt; n;i++)</span><br><span class="line">		p[i] = p[i<span class="number">-1</span>] + a[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">psum1</span><span class="params">(<span class="keyword">float</span> a[],<span class="keyword">float</span> p[],<span class="keyword">long</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	p[<span class="number">0</span>] = a[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;n<span class="number">-1</span>;i+=<span class="number">2</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">float</span> mid_val = p[i<span class="number">-1</span>]+a[i];</span><br><span class="line">		p[i] = mid_val;</span><br><span class="line">		p[i+<span class="number">1</span>] = mid_val+ a[i+<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;n)</span><br><span class="line">		p[i]= a[i] + p[i<span class="number">-1</span>];  <span class="comment">//当i并未到n位置时候执行，将最后一个向量前置和求出</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数psum1()每次迭代计算一个元素。<br>函数psum2()使用了<strong>循环展开</strong>技术，每次迭代计算两个元素。<br>很明显高psum2运行时间明显小于psum1（这个时间优势差距会在元素越多的情况下越拉越大）；使用<strong>最小二乘拟合</strong>也得出一样结论：<br>psum1的运行时间（时钟周期为单位），近似等于368+9.0n<br>psum2的运行时间（时钟周期为单位），近似等于368+6.0n<br>对于较大的n值，运行时间就会由线性因子决定。</p>
+<blockquote>
+<p>9,0和6.0称为<strong>线性因子</strong></p>
+</blockquote>
+<p>根据这种度量标准，psum2的CPE为6.0，优于psum1的CPE为psum1。</p>
+<h2 id="程序示例"><a href="#程序示例" class="headerlink" title="程序示例"></a>程序示例</h2><p>为了说明一个抽象的程序是如何被系统专换为更有效的代码，我们使用基于下面的所示的向量的数据结构来做例子：<br>此向量数据结构将由两个内存块表示：头部和数据数组。<br>以下为<strong>头部结构</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	<span class="keyword">long</span> len;</span><br><span class="line">	<span class="keyword">data_t</span> *data;</span><br><span class="line">&#125;vec_rec, *vec_ptr;</span><br></pre></td></tr></table></figure></p>
+<p>接下来这是我们对向量元素<strong>数据数组</strong>的操作：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_vec_element</span><span class="params">(vec_ptr v,<span class="keyword">long</span> index, <span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(index &lt; <span class="number">0</span> || index&gt;= v-&gt;len)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		*dest = v-&gt;data[index]；</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;		<span class="comment">//得到向量数据数组v在位置index上的数据并赋值给*dest</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">vec_length</span><span class="params">(vec_ptr v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> v-&gt;len;</span><br><span class="line">&#125;		<span class="comment">//返回向量数据数组v的长度</span></span><br></pre></td></tr></table></figure>
+<p>另外我们在接下来的程序中使用声明：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IDEN 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OP *</span></span><br></pre></td></tr></table></figure>
+<p>表示的是对向量的元素进行乘积。<br>或者：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IDEN 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OP +</span></span><br></pre></td></tr></table></figure>
+<p>表示的是对向量的元素进行求和。</p>
+<p>首先是第一次编写的函数combin1()：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine1</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	*dest =IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vec_length(v);i++)&#123;</span><br><span class="line">		<span class="keyword">data_t</span> val;</span><br><span class="line">		get_vec_element(v,i,&amp;val);</span><br><span class="line">		*dest = *dest OP val;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>《深入了解计算机系统》书上测试机器是一台具有Intel Core i7 Haswell处理器的机器上测试的，我们称其为<strong>参考机</strong>。</p>
+</blockquote>
+<p>我们来将combine1()作为我们进行程序优化的起点。<br>详细的CPE数据在书上P349最下面。</p>
+<blockquote>
+<p>我们在书上看到，如果使用GCC的命令行选项“-O1”，会进行一些基本的优化，在这个程序员不需要做任何事情的情况下，在这个程序上优化显著的提升了两个数量级，这也是优化的一个方法——使用-Og优化级别。</p>
+</blockquote>
+<h3 id="消除循环的低效率"><a href="#消除循环的低效率" class="headerlink" title="消除循环的低效率"></a>消除循环的低效率</h3><p>可以观察到，combine1中在for循环中调用了vec_lengeth函数来取得数组长度。<br>这意味着每一次循环迭代，程序都要调用此函数。<br>但是数组长度在本函数是不会改变的。<br>这样我们有了一个优化的思路，用一个length的数据来保存vec_length返回的数组长度，而不是每一次都去调用它。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine2</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	*dest =IDENT;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   <span class="comment">//保存vec_length返回的数组长度</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;length; i++)&#123;</span><br><span class="line">		<span class="keyword">data_t</span> val;</span><br><span class="line">		get_vec_element(v,i,&amp;val);</span><br><span class="line">		*dest = *dest OP val;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个优化方法十分的常见，称之为<strong>代码移动</strong>。这类优化包括将多次识别的值（前提是此值不会改变）存放起来，就如上面，我们将vec_length的调用移动到循环外。<br>优化编译器会试着进行这样的代码移动，但是他并不能可靠的知道这样做是否会有副作用（如果值变化了那就有很大的影响了）。<br>因此，程序员通常要帮编译器显示地完成代码的移动。</p>
+<p>举一个更加极端的例子：lower函数——对字符串中所有大写字母转化为小写字母。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower1</span><span class="params">(<span class="keyword">char</span> *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="built_in">strlen</span>(s); i++)</span><br><span class="line">		<span class="keyword">if</span>(s[i]&gt;=<span class="string">'A'</span> &amp;&amp; s[i]&lt;=<span class="string">'Z'</span>)</span><br><span class="line">			s[i] -= (<span class="string">'A'</span>-<span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower2</span><span class="params">(<span class="keyword">char</span> *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">long</span> len=<span class="built_in">strlen</span>(s);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;len; i++)</span><br><span class="line">		<span class="keyword">if</span>(s[i]&gt;=<span class="string">'A'</span> &amp;&amp; s[i]&lt;=<span class="string">'Z'</span>)</span><br><span class="line">			s[i] -= (<span class="string">'A'</span>-<span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，strlen函数是这样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> <span class="built_in">strlen</span>(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">long</span> length =<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(*s != <span class="string">'\0'</span>)&#123;</span><br><span class="line">		s++;</span><br><span class="line">		length++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在C语言中，字符串的皆为必须是以NULL结尾的字符序列，strlen()必须一步步地检查当前位置的字符，直至遇到NULL。<br>回到编写的lower()函数：<br>基于strlen()的情况，对于lower1()，它的整体运行时间相当于O(n²)。<br>每一次运行时间对于lower1来说都是数组长度n的二次幂（在n越大的情况下，运行时间将会更加的长）。<br>例如：在n=1048576情况下，lower2比lower1快乐500 000多倍。</p>
+<p><strong>对于这种代码移动的优化，需要有非常成熟的完善的分析，这样的分析远超出了编译器的能力，需要程序员来进行这样的变换。</strong></p>
+<h3 id="减少过程调用"><a href="#减少过程调用" class="headerlink" title="减少过程调用"></a>减少过程调用</h3><p>过程调用也会带来很大的开销。<br>例如：combine2函数，get_vec_element的调用来获取下一个向量元素存放在val中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_vec_element</span><span class="params">(vec_ptr v,<span class="keyword">long</span> index, <span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(index &lt; <span class="number">0</span> || index&gt;= v-&gt;len)   <span class="comment">//向量索引i与循环向量作比较</span></span><br><span class="line">		<span class="comment">//........</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对每个向量引用，这个函数要把向量索引i与循环向量作比较，会造成低效率，这种边界检查很必要，但是我们在分析后知道：对于combine2而言，所有的引用都是合法的。（因为我们在combine2函数内的for循环设置了（i&lt;数组长度length）的边界）。</p>
+<p>我们将对此进行优化：<br>假设为我们的抽象数据类型增加一个函数get_vec_start，此函数返回数组起始地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">data* <span class="title">get_vec_start</span><span class="params">(vec_ptr v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> v-&gt;data;   <span class="comment">//返回数组的“头部”</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对此我们可以写出combine3()。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine3</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   </span><br><span class="line">	<span class="keyword">data_t</span> *data = get_vec_start(v);</span><br><span class="line">	*dest = IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;length; i++)&#123;</span><br><span class="line">		*dest = *dest OP data[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在做完这一系列后，我们却发现性能并无更大提升，事实上整体求和性能甚至反降。<br>显然是内部循环中的其他操作限制了瓶颈，这个限制甚至于超过多次调用get_vec_element。</p>
+<p>我们对数据类型为double（8），合并运算OP为乘法的x86-64代码进行分析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.L17:</span><br><span class="line">	vmovsd (%rbx) , %xmm0			//存放dest指向的地址</span><br><span class="line">	vmulsd  (%rdx) , %xmm0 , %xmm0	//存放data[i]元素的指针</span><br><span class="line">	vmovsd   %xmm0 ,(%rbx) 			//在dest存放数据</span><br><span class="line">	addq     $8 ,%rdx				//data+i </span><br><span class="line">	cmpq    %rax, %rdx				//和data+length作对比</span><br><span class="line">	jne       .L17					// if !=,goto loop</span><br></pre></td></tr></table></figure>
+<p>在comine3中，我们看到，dest指针的的地址存放在寄存器 %rbx中；<br>他还改变了代码，将第i个元素的指针存放到寄存器%rdx中，并且每次迭代，这个指针都+8。<br>循环的终止操作来根据%rdx的指针和%rax中的数值来判断。<br>从上面的分析可以看出，每次迭代，累积的变量的数值都要从内存读出再写入，因为每次迭代开始时从dest读出的值就是上次迭代写入的最后的值。</p>
+<p>combine4的目的就是为了消除这种不必要的内存读写：引入临时变量acc来保存循环中累积计算出来的值。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine4</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   </span><br><span class="line">	<span class="keyword">data_t</span> *data = get_vec_start(v);</span><br><span class="line">	<span class="keyword">data_t</span> acc = IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;length; i++)&#123;</span><br><span class="line">		acc = acc OP data[i];</span><br><span class="line">	&#125;</span><br><span class="line">	*dest = acc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这种情况下，我们再来看x86-64代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.L25</span><br><span class="line">	vmulsd（%rdx）,%xmm0,%xmm0	//rdx存放data[i]地址的指针</span><br><span class="line">	addq   $8 ,%rdx				//data+i</span><br><span class="line">	cmpq   %rax, %rdx			</span><br><span class="line">	jne    .L25</span><br></pre></td></tr></table></figure>
+<p>combine4减少了对%rdx存储位置的内存的重复读写。</p>
+<p>在combine4中，相较于combine3，程序性能有了更加明显的提高。</p>
+<p>对于combine3和combine4，,这也引发了一个问题，回到之前的<strong>内存别名使用</strong>问题上，两个函数会有不同的行为。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">combine3(v,get_vec_start(v)+<span class="number">2</span>);</span><br><span class="line">combine4(v,get_vec_start(v)+<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>因为combine3是直接对内存上的数据进行多次的改动，combine4是用额外的acc来保存数据在最后才对%rdx内存位置上的数据进行更替，我们可以粗略的理解为：combine3的改变是实时的，而combin4不是。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函数</th>
+<th style="text-align:left">初始</th>
+<th style="text-align:left">循环前</th>
+<th style="text-align:left">i=0</th>
+<th style="text-align:left">i=1</th>
+<th style="text-align:left">i=2</th>
+<th style="text-align:left">最后结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">combine3</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,1]</td>
+<td style="text-align:left">[2,3,2]</td>
+<td style="text-align:left">[2,3,6]</td>
+<td style="text-align:left">[2,3,36]</td>
+<td style="text-align:left">[2,3,36]</td>
+</tr>
+<tr>
+<td style="text-align:left">combine4</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,5]</td>
+<td style="text-align:left">[2,3,5]</td>
+</tr>
+</tbody>
+</table>
+<p>这种巧合的例子是我们人为设计出来的，但实际中，编译器不能判断函数会在什么情况下调用，以及程序员的本意是什么。取而代之，编译combine3时，保守的方法就是让程序不断地读写内存，即使这样做效率不高。</p>
+<h3 id="循环展开"><a href="#循环展开" class="headerlink" title="循环展开"></a>循环展开</h3><p>上面提及到的<strong>循环展开</strong>是一种程序变换，通过增加每次迭代的计算的元素数量，减少循环迭代次数（上面的psum2函数例子）。<br>我们根据循环展开，可以对combine使用“2X1”循环展开版本：combine5每次循环处理数组两个元素，也就是每次迭代，索引i+2。（并且在当n为2的倍数时，在最后执行将剩余的元素进行处理）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine5</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   </span><br><span class="line">	<span class="keyword">long</span> limit = length<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">data_t</span> *data = get_vec_start(v);</span><br><span class="line">	<span class="keyword">data_t</span> acc = IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;limit; i+=<span class="number">2</span>)&#123;</span><br><span class="line">		acc = (acc OP data[i]) OP data[i+<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(; i&lt;length;i++)&#123;</span><br><span class="line">		acc = acc OP data[i];  <span class="comment">//处理n不为2的倍数时的剩余元素</span></span><br><span class="line">	&#125;</span><br><span class="line">	*dest = acc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在书P367表中对combine4进行循环展开的CPE可以看出，对于OP为整数加法运算，CPE得到一定的提升，这得益于combine5减少了循环次数；但其他情况并没有提升。</p>
+<p>这让我们再次去观察combine5的内循环机器代码。类型data_t为double，操作为乘法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.L35 </span><br><span class="line">	vmulsd (%rax,%rdx,8) , %xmm0, %xmm0</span><br><span class="line">	vmulsd 8(%rax,%rdx,8), %xmm0, %xmm0</span><br><span class="line">	add    $2 , %rdx</span><br><span class="line">	cmpq   %rdx, %rbp</span><br><span class="line">	jg 	   .L35</span><br></pre></td></tr></table></figure>
+<p>与之前一样：%xmm0存放累积值acc，%rdx存放索引i，%rax存放data地址。<br>循环展开导致产生两条vmulsd指令：将data[i]乘以acc；将data[i+1]乘以acc。<br>每条vmulsd被翻译成两个操作：1.从内存中加载一个数组元素 2.将这个乘以已有累积值acc。</p>
+<blockquote>
+<p>详细的数据流图在书P369</p>
+</blockquote>
+<h3 id="提高并行性"><a href="#提高并行性" class="headerlink" title="提高并行性"></a>提高并行性</h3><p>程序的性能是受运算单元的延迟限制的，但他们的执行加法和乘法的功能单元完全是流水线化的：这意味着他们可以每个是中周期开始一个操作，并且有些操作可以被多个功能单元执行。</p>
+<h3 id="多个累积变量"><a href="#多个累积变量" class="headerlink" title="多个累积变量"></a>多个累积变量</h3><p>我们可以对combine5做出这样的改动：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine6</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   </span><br><span class="line">	<span class="keyword">long</span> limit = length<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">data_t</span> *data = get_vec_start(v);</span><br><span class="line">	<span class="keyword">data_t</span> acc0 = IDENT;</span><br><span class="line">	<span class="keyword">data_t</span> acc1 = IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;limit; i+=<span class="number">2</span>)&#123;</span><br><span class="line">		acc0 = acc OP data[i];</span><br><span class="line">		acc1 = acc OP data[i+<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(; i&lt;length;i++)&#123;</span><br><span class="line">		acc0 = acc OP data[i];  </span><br><span class="line">	&#125;</span><br><span class="line">	*dest = acc0 OP acc1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用了两次循环展开，也使用了两路并行，我们将combine6称为“2x2循环展开”。<br>并且这种改进方法，所有情况都有了提升。</p>
+<blockquote>
+<p>数据流图在书P372，可以看到与combine5相比，comebine6会有两条关键路径来对data[n]数据数组进行访问，每天路径包含n/2个操作。</p>
+</blockquote>
+<h3 id="重新结合变换"><a href="#重新结合变换" class="headerlink" title="重新结合变换"></a>重新结合变换</h3><p>这是一种打破顺序相关，从而使性能提高到延迟界限之外的方法。<br>combine5没有改变合并向量元素形成和或者乘积中执行的操作，不过我们可以这样改动，也可极大地提高性能：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">combine7</span><span class="params">(vec_ptr v,<span class="keyword">data_t</span> *dest)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> i;</span><br><span class="line">	<span class="keyword">int</span> length = vec_length(v);   </span><br><span class="line">	<span class="keyword">long</span> limit = length<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">data_t</span> *data = get_vec_start(v);</span><br><span class="line">	<span class="keyword">data_t</span> acc = IDENT;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;limit; i+=<span class="number">2</span>)&#123;</span><br><span class="line">		acc = acc OP (data[i] OP data[i+<span class="number">1</span>]);   <span class="comment">//！！改变了这里，请注意对比</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(; i&lt;length;i++)&#123;</span><br><span class="line">		acc = acc OP data[i];  </span><br><span class="line">	&#125;</span><br><span class="line">	*dest = acc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>combine5元素合并：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acc = (acc OP data[i]) OP data[i+1];</span><br></pre></td></tr></table></figure>
+<p>combine7元素合并：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acc = acc OP (data[i] OP data[i+1]);</span><br></pre></td></tr></table></figure>
+<p>因为括号改变了向量元素与累积值acc的合并顺序，产生了称之为“2x1a”的循环展开形式。</p>
+<blockquote>
+<p>图P374</p>
+</blockquote>
+<p>对于combine4和combine7，有两个load和两个mul操作（load读取data[i]位置的数据，mul将数据相乘），但是combine7只有一个操作形成了循环寄存器间的数据相关链。我们可以在书P375的数据流图看到关键路径上只有n/2个操作，每次迭代内的第一个乘法都不需要等待前一次迭代的累积值就可执行（与combine5对比）。</p>
+<h2 id="结果小结-（性能提高技术）"><a href="#结果小结-（性能提高技术）" class="headerlink" title="结果小结 （性能提高技术）"></a>结果小结 （性能提高技术）</h2><h3 id="高级设计。"><a href="#高级设计。" class="headerlink" title="高级设计。"></a>高级设计。</h3><p>为遇到的问题选择适当的算法和数据结构，避免使用会渐进地产生糟糕性能的算法或编码技术。</p>
+<h3 id="基本编码原则"><a href="#基本编码原则" class="headerlink" title="基本编码原则"></a>基本编码原则</h3><p>避免限制优化的因素。</p>
+<ul>
+<li><strong>消除连续的函数使用</strong>，将计算移到循环外（如上面用len存储长度，而非在循环内调用函数）</li>
+<li><strong>消除不必要的内存引用</strong>，引入临时变量来保存中间结果（如combine函数中的acc），在最后才将结果存放到数组或全局变量中<h3 id="低级优化"><a href="#低级优化" class="headerlink" title="低级优化"></a>低级优化</h3>结构化代码以利用硬件功能</li>
+<li><strong>展开循环，降低开销</strong>，使进一步优化成为可能</li>
+<li><strong>通过使用例如多个累积变量</strong>（如上combine7的acc0和acc1存储临时数据）和重新结合等技术 ，找到方法提高指令集并行</li>
+<li><strong>用功能性的风格重写条件操作</strong>使得便已采用条件数据传送</li>
+</ul>
+<h2 id="确认和消除性能瓶颈"><a href="#确认和消除性能瓶颈" class="headerlink" title="确认和消除性能瓶颈"></a>确认和消除性能瓶颈</h2><p>书P388开始的5.14小节讲述的是如何使用<strong>代码剖析程序（code profiler）</strong>的方法和介绍了程序性能分析工具，还展示了一个<strong>系统优化的通用原则</strong>。本人用得少，只做了解不作展开。</p>
+
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/10/15/《深入了解计算机系统》笔记——汇编语言和机器语言/" title= "《深入了解计算机系统》笔记——汇编语言和机器语言">
+                    <div class="prevTitle">《深入了解计算机系统》笔记——汇编语言和机器语言</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:737180732@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ChristmasError" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/Wechat.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/QQ.png" />
+                </span>
+            
+        
+    
+        
+            
+                <a href="https://steamcommunity.com/profiles/76561198327585119/" class="iconfont-archer steam" target="_blank" title=steam></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">Visit & Clik: <span id="busuanzi_value_site_pv"></span></span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#程序性能优化"><span class="toc-number">1.</span> <span class="toc-text">程序性能优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#程序优化"><span class="toc-number">1.1.</span> <span class="toc-text">程序优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化编译器的能力和局限性"><span class="toc-number">1.2.</span> <span class="toc-text">优化编译器的能力和局限性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#表示程序性能"><span class="toc-number">1.3.</span> <span class="toc-text">表示程序性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序示例"><span class="toc-number">1.4.</span> <span class="toc-text">程序示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#消除循环的低效率"><span class="toc-number">1.4.1.</span> <span class="toc-text">消除循环的低效率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#减少过程调用"><span class="toc-number">1.4.2.</span> <span class="toc-text">减少过程调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#循环展开"><span class="toc-number">1.4.3.</span> <span class="toc-text">循环展开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提高并行性"><span class="toc-number">1.4.4.</span> <span class="toc-text">提高并行性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多个累积变量"><span class="toc-number">1.4.5.</span> <span class="toc-text">多个累积变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新结合变换"><span class="toc-number">1.4.6.</span> <span class="toc-text">重新结合变换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结果小结-（性能提高技术）"><span class="toc-number">1.5.</span> <span class="toc-text">结果小结 （性能提高技术）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#高级设计。"><span class="toc-number">1.5.1.</span> <span class="toc-text">高级设计。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本编码原则"><span class="toc-number">1.5.2.</span> <span class="toc-text">基本编码原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#低级优化"><span class="toc-number">1.5.3.</span> <span class="toc-text">低级优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#确认和消除性能瓶颈"><span class="toc-number">1.6.</span> <span class="toc-text">确认和消除性能瓶颈</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 8
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/17</span><a class="archive-post-title" href= "/2018/10/17/《深入了解计算机系统》笔记——优化程序性能/" >《深入了解计算机系统》笔记——程序性能优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/15</span><a class="archive-post-title" href= "/2018/10/15/《深入了解计算机系统》笔记——汇编语言和机器语言/" >《深入了解计算机系统》笔记——汇编语言和机器语言</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/15</span><a class="archive-post-title" href= "/2018/10/15/《深入理解计算机系统》笔记——信息的表示和处理/" >《深入了解计算机系统》笔记——信息的表示和处理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/13</span><a class="archive-post-title" href= "/2018/10/13/《深入理解计算机系统》笔记——计算机系统漫游/" >《深入了解计算机系统》笔记——计算机系统漫游</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/2018/10/10/归并排序——leetcode144排序链表/" >leetcode刷题笔记：144排序链表——归并排序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/27</span><a class="archive-post-title" href= "/2018/09/27/泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）/" >泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/23</span><a class="archive-post-title" href= "/2018/09/23/Hexo博客发布——Markdown基础语法/" >Hexo博客发布—Markdown基础语法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span><a class="archive-post-title" href= "/2018/09/22/hello-world/" >Hello World</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
+    
+        <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
+    
+        <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
+    
+        <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
+    
+        <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "ChristmasError"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
