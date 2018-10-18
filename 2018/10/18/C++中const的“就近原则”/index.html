@@ -272,7 +272,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">941</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">942</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -404,15 +404,15 @@ height:50vh;
         <p>在做题的时候，编译时经常会遇到关于const的坑，如果在平时不是常用的话就会很容易忘记，在这里整理一下const的“<strong>就近原则</strong>”的笔记。</p>
 <h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><p>要理解<strong>就近原则</strong>首先要明白指针。<br><strong>指针（pointer）</strong>，可以看作<strong>指向（point to）</strong>。与引用类似，实现了对其他对象的<strong>间接访问。</strong><br>但有两个不同之处：<br>1.指针本身就是一个对象，允许对指针赋值和拷贝，并且指针在周期内可以先后指向几个不同的对象（除非是const指针）</p>
 <blockquote>
-<p>　<strong>const指针</strong>是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：<br><strong>int * const pTwo;</strong>    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变量）的值可以修改。（结合之后会说的<strong>就近原则</strong>理解记忆。）</p>
+<p><strong>const指针</strong>是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：<br><strong>int * const pTwo;</strong>    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变量）的值可以修改。（结合之后会说的<strong>就近原则</strong>理解记忆。）</p>
 </blockquote>
 <p>2.指针无需在定义时赋初值（若未初始化，它将有一个不确定得值）。</p>
-<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> b = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span>* <span class="keyword">const</span> p1 = &amp;a;			<span class="comment">//p1是指向int型数据的const指针，指向不可改变。</span></span><br><span class="line">	<span class="keyword">int</span>* (<span class="keyword">const</span> p11) = &amp;a;		<span class="comment">//p11与p1相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> *p2 = &amp;a;			<span class="comment">//p2是指向int型数据的指针，指向可以改变，</span></span><br><span class="line">								<span class="comment">//但不可以通过p2改变指向地址上的值。</span></span><br><span class="line">	<span class="function"><span class="keyword">const</span> <span class="title">int</span><span class="params">(*p22)</span> </span>= &amp;a;		<span class="comment">//p22与p2相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span>* <span class="keyword">const</span> p3 = &amp;a;	<span class="comment">//p3是指向in型数据的const指针，不能通过p3改变指向地址上的值。</span></span><br><span class="line">	p1 = &amp;b;		<span class="comment">//报错（指针指向不能被修改）</span></span><br><span class="line">	*p1 = b;</span><br><span class="line">	p2 = &amp;b;</span><br><span class="line">	*p2 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p22 = &amp;b;</span><br><span class="line">	*p22 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p3 = &amp;b;		<span class="comment">//报错（指针指向不能被修改且指针指向的内容不能被修改）</span></span><br><span class="line">	*p3 = b;		<span class="comment">//报错</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> b = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span>* <span class="keyword">const</span> p1 = &amp;a;		<span class="comment">//p1是指向int型数据的const指针，指向不可改变。</span></span><br><span class="line">	<span class="keyword">int</span>* (<span class="keyword">const</span> p11) = &amp;a;		<span class="comment">//p11与p1相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> *p2 = &amp;a;		<span class="comment">//p2是指向int型数据的指针，指向可以改变，</span></span><br><span class="line">					<span class="comment">//但不可以通过p2改变指向地址上的值。</span></span><br><span class="line">	<span class="function"><span class="keyword">const</span> <span class="title">int</span><span class="params">(*p22)</span> </span>= &amp;a;		<span class="comment">//p22与p2相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span>* <span class="keyword">const</span> p3 = &amp;a;	<span class="comment">//p3是指向in型数据的const指针，不能通过p3改变指向地址上的值。</span></span><br><span class="line">	p1 = &amp;b;		<span class="comment">//报错（指针指向不能被修改）</span></span><br><span class="line">	*p1 = b;</span><br><span class="line">	p2 = &amp;b;</span><br><span class="line">	*p2 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p22 = &amp;b;</span><br><span class="line">	*p22 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p3 = &amp;b;		<span class="comment">//报错（指针指向不能被修改且指针指向的内容不能被修改）</span></span><br><span class="line">	*p3 = b;		<span class="comment">//报错</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>读const指针的方法，我们可以学习《C++Primer》上 P56的方法，也就是“从右往左读”。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb =<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> curErr = &amp;errNumb;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.1415</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> *<span class="keyword">const</span> pip = &amp;pi;</span><br></pre></td></tr></table></figure>
 <p>此例中，从右往左，离curErr最近的是const，意味着curErr本身是一个常量对象，继续往左看，下一个符号*和int表明curErr是一个指向int类型的指针——结合起来curErr就是一个常量指针，指向不可变，但可通过其本身改变指向地址上的值。<br>指针pip同理，可以得知：pip是一个指向const double的const指针，指向和指向地址上的值不可变。</p>
 <blockquote>
-<p> const ————————修饰指针<br> const int <em> ——————const修饰指针指向的对象, int </em> const</p>
+<p> const* ———————————修饰指针<br> const int*——————const修饰指针指向的对象, int * const</p>
 </blockquote>
 <h1 id="就近原则"><a href="#就近原则" class="headerlink" title="就近原则"></a>就近原则</h1><p>就近原则我们可以在K &amp; R 《The C Programming Language》（2nd）</p>
 <blockquote>
@@ -424,8 +424,8 @@ height:50vh;
 <p>and the type of the identifier in the declaration T D1 is<br><code>type-modifier T,&#39;&#39; the type of the identifier of D is</code>type-modifier type-qualifier-list pointer to T.’’ Qualifiers<br>following * apply to pointer itself, rather than to the object to<br>which the pointer points.</p>
 </blockquote>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> **s；</span><br></pre></td></tr></table></figure>
-<p>对于以上的声明，以<em>号界定，开始读：<br>以最右边第一个 </em> 号开始，形式为：<br>const char *<em> | s<br>最右面第一个s前没有修饰符，可以改变指针指向；s是指向const char </em>的指针（const char <em>就是指针），因此s也就是指向指针的指针；<br>再看第二个 </em> 号，形式为：<br>为const char <em> | </em>s<br>由于<em>s前没有修饰符，因此（</em>s）其值是可以改变的；</p>
-<p>最后看const char <em>，类似于前面的const int </em>p1，因此表示该指针(*s)指向的（此处为字符串）为常量，其值不可改变；</p>
+<p>对于以上的声明，以*号界定，开始读：<br>以最右边第一个 * 号开始，形式为：<br>const char ** | s<br>最右面第一个s前没有修饰符，可以改变指针指向；s是指向const char **的指针（const char *就是指针），因此s也就是指向指针的指针；<br>再看第二个* 号，形式为：<br>为const char * | *s<br>由于*s前没有修饰符，因此（*s）其值是可以改变的；</p>
+<p>最后看const char *，类似于前面的const int *p1，因此表示该指针(***s)指向的（此处为字符串）为常量，其值不可改变；</p>
 <p>测试：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *fmt = <span class="string">"hello"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> **s = &amp;fmt;</span><br><span class="line">*s++;				<span class="comment">//正确，指向改变了</span></span><br><span class="line">(*s)++;				<span class="comment">//正确，指向的地址上的值，可以改变值</span></span><br><span class="line">(**s)++;			<span class="comment">//报错，指向的地址上的值不可改变</span></span><br><span class="line">**s++;</span><br></pre></td></tr></table></figure></p>
 
     </article>
@@ -674,6 +674,14 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 9
@@ -740,17 +748,17 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
-        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
-    
         <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
     
-        <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
+        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
     
         <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
     
-        <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
+        <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
     
         <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
+    
+        <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
