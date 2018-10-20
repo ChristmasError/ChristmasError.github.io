@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>C++中const的“就近原则” · ChristmasError-blog</title>
+    <title>C++智能指针：shared_ptr,unique_ptr,weak_ptr · ChristmasError-blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -217,7 +217,7 @@
                 <a href="/" >ChristmasError-Blog</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">C++中const的“就近原则”</a>
+                <a href="#" class="post-name">C++智能指针：shared_ptr,unique_ptr,weak_ptr</a>
             </div>
     </div>
     
@@ -247,7 +247,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            C++中const的“就近原则”
+            C++智能指针：shared_ptr,unique_ptr,weak_ptr
             <!-- 404 -->
             
         </h1>
@@ -266,18 +266,18 @@ height:50vh;
                 
                     <div class= post-intro-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "指针，const">指针，const</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "智能指针">智能指针</a>
     
 </div>
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">942</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">2.5k</span>阅读时长: <span class="post-count reading-time">9 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2018/10/18</span>
+                    <span class="post-intro-time">2018/10/20</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -401,32 +401,148 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>在做题的时候，编译时经常会遇到关于const的坑，如果在平时不是常用的话就会很容易忘记，在这里整理一下const的“<strong>就近原则</strong>”的笔记。</p>
-<h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><p>要理解<strong>就近原则</strong>首先要明白指针。<br><strong>指针（pointer）</strong>，可以看作<strong>指向（point to）</strong>。与引用类似，实现了对其他对象的<strong>间接访问。</strong><br>但有两个不同之处：<br>1.指针本身就是一个对象，允许对指针赋值和拷贝，并且指针在周期内可以先后指向几个不同的对象（除非是const指针）</p>
-<blockquote>
-<p><strong>const指针</strong>是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：<br><strong>int * const pTwo;</strong>    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变量）的值可以修改。（结合之后会说的<strong>就近原则</strong>理解记忆。）</p>
-</blockquote>
-<p>2.指针无需在定义时赋初值（若未初始化，它将有一个不确定得值）。</p>
-<h1 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> b = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span>* <span class="keyword">const</span> p1 = &amp;a;		<span class="comment">//p1是指向int型数据的const指针，指向不可改变。</span></span><br><span class="line">	<span class="keyword">int</span>* (<span class="keyword">const</span> p11) = &amp;a;		<span class="comment">//p11与p1相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> *p2 = &amp;a;		<span class="comment">//p2是指向int型数据的指针，指向可以改变，</span></span><br><span class="line">					<span class="comment">//但不可以通过p2改变指向地址上的值。</span></span><br><span class="line">	<span class="function"><span class="keyword">const</span> <span class="title">int</span><span class="params">(*p22)</span> </span>= &amp;a;		<span class="comment">//p22与p2相同。</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span>* <span class="keyword">const</span> p3 = &amp;a;	<span class="comment">//p3是指向in型数据的const指针，不能通过p3改变指向地址上的值。</span></span><br><span class="line">	p1 = &amp;b;		<span class="comment">//报错（指针指向不能被修改）</span></span><br><span class="line">	*p1 = b;</span><br><span class="line">	p2 = &amp;b;</span><br><span class="line">	*p2 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p22 = &amp;b;</span><br><span class="line">	*p22 = b;		<span class="comment">//报错（指针指向的内容不能被修改）</span></span><br><span class="line">	p3 = &amp;b;		<span class="comment">//报错（指针指向不能被修改且指针指向的内容不能被修改）</span></span><br><span class="line">	*p3 = b;		<span class="comment">//报错</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>读const指针的方法，我们可以学习《C++Primer》上 P56的方法，也就是“从右往左读”。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb =<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> curErr = &amp;errNumb;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.1415</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> *<span class="keyword">const</span> pip = &amp;pi;</span><br></pre></td></tr></table></figure>
-<p>此例中，从右往左，离curErr最近的是const，意味着curErr本身是一个常量对象，继续往左看，下一个符号*和int表明curErr是一个指向int类型的指针——结合起来curErr就是一个常量指针，指向不可变，但可通过其本身改变指向地址上的值。<br>指针pip同理，可以得知：pip是一个指向const double的const指针，指向和指向地址上的值不可变。</p>
-<blockquote>
-<p> const* ———————————修饰指针<br> const int*——————const修饰指针指向的对象, int * const</p>
-</blockquote>
-<h1 id="就近原则"><a href="#就近原则" class="headerlink" title="就近原则"></a>就近原则</h1><p>就近原则我们可以在K &amp; R 《The C Programming Language》（2nd）</p>
-<blockquote>
-<p>A.8.6.1 Pointer Declarators</p>
-<p>In a declaration T D where D has the form</p>
+        <h1 id="动态内存"><a href="#动态内存" class="headerlink" title="动态内存"></a>动态内存</h1><p>在C++中，动态内存的管理是通过一对运算符来完成的：<strong>new</strong>和<strong>delete</strong>。<br><strong>new</strong>：在动态内存中为对象分配空间，并返回一个指向该对象的指针<br><strong>delete</strong>：接受一个动态对象的指针，销毁该对象，并释放与之关联的内存</p>
+<p>动态内存的使用需要十分小心，因为要在编程的时候要确保在正确的时间对内存进行释放是极其困难的。如果释放内存不及时，在这种情况下就会出现<strong>内存泄漏</strong>；但若过早的释放（在仍有指针指向该内存的时候就把其释放了），就会产生引用非法内存的指针（称为<strong>空悬指针</strong>）。</p>
+<p>程序使用动态内存主要处以以下三种原因之一：</p>
 <ul>
-<li>type-qualifier-listopt D1</li>
+<li>程序不知道自己需要多少对象</li>
+<li>程序不知道所需对象的准确类型</li>
+<li>程序要在多个对象间共享数据（<strong>多个对象共享相同底层数据</strong>）</li>
 </ul>
-<p>and the type of the identifier in the declaration T D1 is<br><code>type-modifier T,&#39;&#39; the type of the identifier of D is</code>type-modifier type-qualifier-list pointer to T.’’ Qualifiers<br>following * apply to pointer itself, rather than to the object to<br>which the pointer points.</p>
+<p>在C++中，为了能更安全更容易的使用动态内存，新的标准库提供了两种<strong>智能指针</strong>(smart pointer)<strong>类型</strong>来管理动态对象（注意：智能指针是<strong>类型</strong>）。</p>
+<h1 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h1><p>智能指针的行为类似常规指针，但与常规不同的是，<strong>它负责自动释放所指向对象</strong>。<br>新标准库提供的这两种智能指针的区别在于管理底层指针的方式：<br><strong>shared_ptr</strong>：允许多个指针指向同一个对象<br><strong>imoqie_ptr</strong>：“独占”所指向的对象<br>同时，标准库还提供了一个名为<strong>weak_ptr</strong>的伴随类：<br><strong>weak_ptr</strong>：它是一种<strong>弱引用</strong>，指向shared_ptr所管理的对象。</p>
+<p>以上三种类型都定义在<strong>memory头文件</strong>中。</p>
+<h2 id="shared-ptr类"><a href="#shared-ptr类" class="headerlink" title="shared_ptr类"></a>shared_ptr类</h2><p>shared_ptr类类似vector，智能指针也是一种模板（template）。因此在创建智能指针对象的时候，也必须提供<strong>指针指向的类型</strong>的信息。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p1;</span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="built_in">string</span>&gt; p2;</span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p3 (<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">16</span>)); <span class="comment">//正确</span></span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p4 = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">16</span>);  <span class="comment">//错误</span></span><br></pre></td></tr></table></figure></p>
+<p>对于p3,p4,shared_ptr的构造函数是explicit的，因此我们不能将一个内置指针隐式转换为一个智能指针（p4的初始化隐式地要求编译器用一个new返回的int*来创建一个shared_ptr，因此是错误的）。<br>|shared_ptr和unique_ptr都支持的操作  | |<br>|:–|:–|<br>|shared_ptr&lt; T &gt;sp  |空智能指针，默认初始化的智能指针中保存着一个空指针|<br>|p  |将p作为一个条件判断，若p指向一个对象，则为true  |<br>|*p  |解引用p，获得p指向的对象  |<br>|p-&gt;mem|等价于(*p).mem|<br>|p.get()|返回p中保存的指针。小心使用，若智能指针释放了其对象，返回的指针所指向的对象也同时消失了。|<br>|swap(p,q)|交换p和q的指针|<br>|p.swap(q)|交换p和q的指针|</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">shared_ptr独有的操作</th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">make_shared&lt; T &gt;(<strong><em>args</em></strong>)</td>
+<td style="text-align:left">返回一个shared_ptr，指向一个动态分配的类型为T的对象，使用args初始化该对象</td>
+</tr>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt;p(q)</td>
+<td style="text-align:left">p是shared_ptr q的拷贝，此操作会递增q中的<strong>计数器</strong>。q指针必须能转换为T*</td>
+</tr>
+<tr>
+<td style="text-align:left">p = q</td>
+<td style="text-align:left">p和都为shared_ptr，保存的指针必须能相互转换，此操作会递减p的<strong>引用计数</strong>，递增q的引用计数；若p的引用计数为0,则将其管理的内存释放</td>
+</tr>
+<tr>
+<td style="text-align:left">p.unique()</td>
+<td style="text-align:left">若p.use_count()为1，返回true，否则false</td>
+</tr>
+<tr>
+<td style="text-align:left">p.use_count()</td>
+<td style="text-align:left">返回与p共享对象的智能指针数量（只要勇调试）</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">定义和改变shared_ptr的其他方法</th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt; p(q)</td>
+<td style="text-align:left">p管理内置指针q所指向的对象，q必须质量new分配的内存切可以转换为T*内型</td>
+</tr>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt; p(p2,d)</td>
+<td style="text-align:left">p是p2的拷贝，唯一区别是p将使用可调用对象d来代替delete（lambda表达式）</td>
+</tr>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt; p(u)</td>
+<td style="text-align:left">p从unique_ptr u处接管了对象所有权，将u置为空</td>
+</tr>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt; p(q,d)</td>
+<td style="text-align:left">p将使用可调用对象d来代替delete（lambda表达式）</td>
+</tr>
+<tr>
+<td style="text-align:left">p.reset()</td>
+<td style="text-align:left">p若是唯一指向器对象的shared_ptr，reset将释放此对象</td>
+</tr>
+<tr>
+<td style="text-align:left">p.reset(q)</td>
+<td style="text-align:left">若释放后，传递了q，会令p指向q</td>
+</tr>
+<tr>
+<td style="text-align:left">p.reset(q,d)</td>
+<td style="text-align:left">结合以上两种方法，使用lambda表达式用d代替delete</td>
+</tr>
+</tbody>
+</table>
+<p>对于shared_ptr&lt; T &gt;p(q)的操作 和 p=q的拷贝和赋值操作，我们要注意个对象中的计数器的变化和引用计数（reference count）的变化。</p>
+<blockquote>
+<p>我们用一个shared_ptr去初始化另一个shared_ptr，或将它作为参数传递给一个函数以及作为函数的返回值，它所关联的计数器就会递增。<br>若給shared_ptr赋予一个新值或者是shared_ptr被销毁，一个局部的shared_ptr离开了作用域，计数器就会递减。</p>
 </blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> **s；</span><br></pre></td></tr></table></figure>
-<p>对于以上的声明，以*号界定，开始读：<br>以最右边第一个 * 号开始，形式为：<br>const char ** | s<br>最右面第一个s前没有修饰符，可以改变指针指向；s是指向const char **的指针（const char *就是指针），因此s也就是指向指针的指针；<br>再看第二个* 号，形式为：<br>为const char * | *s<br>由于*s前没有修饰符，因此（*s）其值是可以改变的；</p>
-<p>最后看const char *，类似于前面的const int *p1，因此表示该指针(***s)指向的（此处为字符串）为常量，其值不可改变；</p>
-<p>测试：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *fmt = <span class="string">"hello"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> **s = &amp;fmt;</span><br><span class="line">*s++;				<span class="comment">//正确，指向改变了</span></span><br><span class="line">(*s)++;				<span class="comment">//正确，指向的地址上的值，可以改变值</span></span><br><span class="line">(**s)++;			<span class="comment">//报错，指向的地址上的值不可改变</span></span><br><span class="line">**s++;</span><br></pre></td></tr></table></figure></p>
+<h3 id="make-shared-函数"><a href="#make-shared-函数" class="headerlink" title="make_shared 函数"></a>make_shared 函数</h3><p>make_shared同样也包含在memory头文件中。<br>最安全的分配和使用动态内存的方法是调用一个名为make_shared 的标准库函数。<br>make_shared函数在动态内存中分配一个对象并初始化它，返回指向此对象的shared_ptr。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//p1为一个指向值为999的int的shared_ptr</span></span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt;p1 = make_shared&lt;<span class="keyword">int</span>&gt;(<span class="number">999</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//p2为指向一个值初始化的int（即此int值为0）</span></span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt;p2 = make_shared&lt;<span class="keyword">int</span>&gt;();</span><br></pre></td></tr></table></figure>
+<p>p2看出，如果传递任何参数，对象就会进行<strong>值初始化</strong>。</p>
+<h3 id="shared-ptr自动销毁所管理的对象，自动释放相关联的内存"><a href="#shared-ptr自动销毁所管理的对象，自动释放相关联的内存" class="headerlink" title="shared_ptr自动销毁所管理的对象，自动释放相关联的内存"></a>shared_ptr自动销毁所管理的对象，自动释放相关联的内存</h3><p>当指向一个对象的最后一个shared_ptr被销毁，shared_ptr类会自动销毁这个对象。他通过他的<strong>析构函数</strong>完成这项工作。<br>若当动态对象不被使用，shared_ptr类会自动释放动态对象，这个特性就是的动态内存的使用变得十分容易。<br>例如一下的factory 函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;FOO&gt; factory (T arg)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//函数内容</span></span><br><span class="line">	<span class="comment">//shared_ptr负责释放内存</span></span><br><span class="line">	<span class="keyword">return</span> make_shared&lt;FOO&gt;(arg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们在use_factory函数调用它：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">use_factory</span><span class="params">(T arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">shared_ptr</span>&lt;FOO&gt;p = factory(arg);</span><br><span class="line">	<span class="comment">//函数内容</span></span><br><span class="line">&#125;</span><br><span class="line">	<span class="comment">//在这里，p属于局部的变量，p离开了作用域，它指向的内存也会被自动释放</span></span><br></pre></td></tr></table></figure>
+<p>p属于局部的变量，p离开了作用域，它指向的内存也会被自动释放。当p被销毁时，将<strong>递减引用计数</strong>并<strong>检查他是否为0</strong>。<br>但如果有其他的shared_ptr也同时指向这块内存，他将不会被释放（引用计数器检查不为0）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">use_factory</span><span class="params">(T arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">shared_ptr</span>&lt;FOO&gt;p = factory(arg);	</span><br><span class="line">	<span class="comment">//（此例此处可以简单的看作引用计数为1）</span></span><br><span class="line">	<span class="comment">//函数内容</span></span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">	<span class="comment">//函数反悔了p，引用计数进行了递增操作（此处可看作引用计数为2）</span></span><br><span class="line">&#125;</span><br><span class="line">	<span class="comment">//p离开了作用域，引用计数递减但最终但不为0（引用计数为1）</span></span><br></pre></td></tr></table></figure>
+<p>和其特性一样，若引用计数不为0，他的内存都不会被释放，因此保证shared_ptr在无用之后不再保留非常重要（避免内存浪费）。<br>一种要注意的情况就是，如果将shared_ptr保存在一个容器中（如vector），随后重拍了容器，不再需要其中某些元素，这种情况下，要确保用erase函数删除那些不再需要的shared_ptr。</p>
+<h2 id="unique-ptr类"><a href="#unique-ptr类" class="headerlink" title="unique_ptr类"></a>unique_ptr类</h2><p>unique_ptr“拥有”它所指向的对象，与shared_ptr不同，某个时刻只能由一个unique_ptr指向一个给定对象。<br>和shared_ptr不同的是，没有类似make_shared的标准库函数返回一个unique_str。<br>我们要定义一个unique_ptr时，需要<strong>将其绑定到一个new返回的指针上</strong>，类似shared_ptr，初始化unique_ptr必须采用直接初始化形式（unique_ptr构造函数也为explicit）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">unique_ptr</span>&lt;<span class="built_in">string</span>&gt; p1(<span class="keyword">new</span> <span class="built_in">string</span> (<span class="string">"ABC"</span>);</span><br><span class="line"><span class="built_in">unique_ptr</span>&lt;<span class="built_in">string</span>&gt; p2(p1);  <span class="comment">//错误，unique_ptr不支持拷贝</span></span><br><span class="line"><span class="built_in">unique_ptr</span>&lt;<span class="built_in">string</span>&gt; p2(p1.release());  <span class="comment">//正确，up1用realease置为空，p2初始化为p1原来的指针</span></span><br><span class="line"><span class="built_in">unique_ptr</span>&lt;<span class="built_in">string</span>&gt; p3;</span><br><span class="line">p3 = p2;  <span class="comment">//错误，unique_ptr不支持赋值</span></span><br><span class="line">p2.reset(p1.release());	<span class="comment">//正确，reset释放了p2指向的内存，这行代码表示将所有权从p1转移给p2</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">unique_ptr操作（与shared_ptr相同操作不重复列出）</th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">unique_ptr&lt; T &gt;u1</td>
+<td style="text-align:left">空unique_ptr，指向类型为T对象。</td>
+</tr>
+<tr>
+<td style="text-align:left">unique_ptr&lt; T , D&gt; u2</td>
+<td style="text-align:left">空unique_ptr，与u1不同的是，u2会使用一个类型为D的可调用对象来释放他的指针</td>
+</tr>
+<tr>
+<td style="text-align:left">unique_ptr&lt; T , D &gt; u(d)</td>
+<td style="text-align:left">空unique_ptr，会使用类型为D的对象d来代替delete</td>
+</tr>
+<tr>
+<td style="text-align:left">u = nullptr</td>
+<td style="text-align:left">释放u所指向对象，u置为空</td>
+</tr>
+<tr>
+<td style="text-align:left">u.realease()</td>
+<td style="text-align:left">放弃对指针控制权，返回指针并将u置为空</td>
+</tr>
+<tr>
+<td style="text-align:left">u.reset()</td>
+<td style="text-align:left">释放u所指向的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">u.reset(q)</td>
+<td style="text-align:left">若提供了内置指针q，会令u指向q</td>
+</tr>
+<tr>
+<td style="text-align:left">u.reset(nullptr)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="weak-ptr类"><a href="#weak-ptr类" class="headerlink" title="weak_ptr类"></a>weak_ptr类</h2><p>weak_ptr是一种不控制所指向对象生存期的正能指针，他指向一个shared_ptr管理的对象。<br>将一个weak_ptr绑定到一个shared_ptr不会改变目标对象的引用计数。<br>一旦最后一个指向该对象的shared_ptr被销毁，对象就会被释放，即使有weak_ptr指向该对象，他依旧会被释放。<br>因此，weak_ptr有智能指针“弱”共享的特点。<br>|weak_ptr|  |<br>|:–|:–|<br>| weak_ptr&lt; T &gt; w  | 空weak_ptr可以指向类型为T的对象 |<br>|weak_ptr&lt; T &gt;w(sp)|与shared_ptr sp 指向相同对象的weak_ptr，T必须能转换为sp所指向的类型|<br>|w = p |p可以是一个shared_ptr也可以是weak_ptr，赋值后p与w共享对象|<br>|w.rese()|w置为空|<br>|w.use_count()|与w共享对象的shared_ptr的数量|<br>|w.expired()|若w.use_count()为0,返回true，否则false|<br>|w.lock()|如果expired为true，返回一个空shared_ptr，否则返回一个指向w的对象的shared_ptr|</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> p =  make_shared&lt;<span class="keyword">int</span>&gt;(<span class="number">666</span>);</span><br><span class="line">weak_ptr&lt;<span class="keyword">int</span>&gt; wp(p);</span><br><span class="line"><span class="comment">//wp弱共享p,不会改变p引用计数</span></span><br></pre></td></tr></table></figure>
+<p>在使用weak_ptr时，由于指向的对象可能不存在，因此需要调用lock来检查weak_ptr所指向对象是否存在，如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; np== wp.lock())&#123;  <span class="comment">//lock在指向对象存在时返回一个指向该对象的shared_ptr</span></span><br><span class="line">	<span class="comment">//在if中，np与wp共享对象</span></span><br><span class="line">	<span class="comment">//但仅仅可以保证在此if中，该对象的共享访问是安全的</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </article>
     <!-- license  -->
@@ -435,17 +551,12 @@ height:50vh;
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/10/20/C++智能指针shared_ptr，uniqe_ptr，weak_ptr/" title= "C++智能指针：shared_ptr,unique_ptr,weak_ptr">
-                    <div class="nextTitle">C++智能指针：shared_ptr,unique_ptr,weak_ptr</div>
-                </a>
-            
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2018/10/17/《深入了解计算机系统》笔记——优化程序性能/" title= "《深入了解计算机系统》笔记——程序性能优化">
-                    <div class="prevTitle">《深入了解计算机系统》笔记——程序性能优化</div>
+                <a href= "/2018/10/18/C++中const的“就近原则”/" title= "C++中const的“就近原则”">
+                    <div class="prevTitle">C++中const的“就近原则”</div>
                 </a>
             
         </li>
@@ -575,7 +686,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#指针"><span class="toc-number">1.</span> <span class="toc-text">指针</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简单示例"><span class="toc-number">2.</span> <span class="toc-text">简单示例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#就近原则"><span class="toc-number">3.</span> <span class="toc-text">就近原则</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#动态内存"><span class="toc-number">1.</span> <span class="toc-text">动态内存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#智能指针"><span class="toc-number">2.</span> <span class="toc-text">智能指针</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#shared-ptr类"><span class="toc-number">2.1.</span> <span class="toc-text">shared_ptr类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#make-shared-函数"><span class="toc-number">2.1.1.</span> <span class="toc-text">make_shared 函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shared-ptr自动销毁所管理的对象，自动释放相关联的内存"><span class="toc-number">2.1.2.</span> <span class="toc-text">shared_ptr自动销毁所管理的对象，自动释放相关联的内存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unique-ptr类"><span class="toc-number">2.2.</span> <span class="toc-text">unique_ptr类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#weak-ptr类"><span class="toc-number">2.3.</span> <span class="toc-text">weak_ptr类</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
