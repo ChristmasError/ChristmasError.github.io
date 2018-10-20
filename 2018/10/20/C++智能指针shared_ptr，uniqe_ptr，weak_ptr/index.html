@@ -577,7 +577,45 @@ height:50vh;
 </tr>
 </tbody>
 </table>
-<h2 id="weak-ptr类"><a href="#weak-ptr类" class="headerlink" title="weak_ptr类"></a>weak_ptr类</h2><p>weak_ptr是一种不控制所指向对象生存期的正能指针，他指向一个shared_ptr管理的对象。<br>将一个weak_ptr绑定到一个shared_ptr不会改变目标对象的引用计数。<br>一旦最后一个指向该对象的shared_ptr被销毁，对象就会被释放，即使有weak_ptr指向该对象，他依旧会被释放。<br>因此，weak_ptr有智能指针“弱”共享的特点。<br>|weak_ptr|  |<br>|:–|:–|<br>| weak_ptr&lt; T &gt; w  | 空weak_ptr可以指向类型为T的对象 |<br>|weak_ptr&lt; T &gt;w(sp)|与shared_ptr sp 指向相同对象的weak_ptr，T必须能转换为sp所指向的类型|<br>|w = p |p可以是一个shared_ptr也可以是weak_ptr，赋值后p与w共享对象|<br>|w.rese()|w置为空|<br>|w.use_count()|与w共享对象的shared_ptr的数量|<br>|w.expired()|若w.use_count()为0,返回true，否则false|<br>|w.lock()|如果expired为true，返回一个空shared_ptr，否则返回一个指向w的对象的shared_ptr|</p>
+<h2 id="weak-ptr类"><a href="#weak-ptr类" class="headerlink" title="weak_ptr类"></a>weak_ptr类</h2><p>weak_ptr是一种不控制所指向对象生存期的正能指针，他指向一个shared_ptr管理的对象。<br>将一个weak_ptr绑定到一个shared_ptr不会改变目标对象的引用计数。<br>一旦最后一个指向该对象的shared_ptr被销毁，对象就会被释放，即使有weak_ptr指向该对象，他依旧会被释放。<br>因此，weak_ptr有智能指针“弱”共享的特点。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">weak_ptr</th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">weak_ptr&lt; T &gt; w</td>
+<td style="text-align:left">空weak_ptr可以指向类型为T的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">weak_ptr&lt; T &gt;w(sp)</td>
+<td style="text-align:left">与shared_ptr sp 指向相同对象的weak_ptr，T必须能转换为sp所指向的类型</td>
+</tr>
+<tr>
+<td style="text-align:left">w = p</td>
+<td style="text-align:left">p可以是一个shared_ptr也可以是weak_ptr，赋值后p与w共享对象</td>
+</tr>
+<tr>
+<td style="text-align:left">w.rese()</td>
+<td style="text-align:left">w置为空</td>
+</tr>
+<tr>
+<td style="text-align:left">w.use_count()</td>
+<td style="text-align:left">与w共享对象的shared_ptr的数量</td>
+</tr>
+<tr>
+<td style="text-align:left">w.expired()</td>
+<td style="text-align:left">若w.use_count()为0,返回true，否则false</td>
+</tr>
+<tr>
+<td style="text-align:left">w.lock()</td>
+<td style="text-align:left">如果expired为true，返回一个空shared_ptr，否则返回一个指向w的对象的shared_ptr</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> p =  make_shared&lt;<span class="keyword">int</span>&gt;(<span class="number">666</span>);</span><br><span class="line">weak_ptr&lt;<span class="keyword">int</span>&gt; wp(p);</span><br><span class="line"><span class="comment">//wp弱共享p,不会改变p引用计数</span></span><br></pre></td></tr></table></figure>
 <p>在使用weak_ptr时，由于指向的对象可能不存在，因此需要调用lock来检查weak_ptr所指向对象是否存在，如：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; np== wp.lock())&#123;  <span class="comment">//lock在指向对象存在时返回一个指向该对象的shared_ptr</span></span><br><span class="line">	<span class="comment">//在if中，np与wp共享对象</span></span><br><span class="line">	<span class="comment">//但仅仅可以保证在此if中，该对象的共享访问是安全的</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -845,6 +883,10 @@ top:50vh;
     
     
     
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 10
@@ -916,15 +958,15 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
+    
         <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
     
         <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
     
-        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
-    
-        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
-    
         <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
+    
+        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
     
         <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
     
