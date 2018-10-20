@@ -346,93 +346,27 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/09/27/泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）/" >
+        <a class="abstract-title" href = "/2018/10/21/C++11 Lambda表达式/" >
             
-                <span>泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）</span>
+                <span>C++11 Lambda表达式</span>
         </a>
         <div class="abstract-content">
-            泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）前言近期在研究stl源代码及stl里各种实现的细节，初学入门免不了模仿，以下便写一次自己的简单的list容器的迭代器。首先，在开始编写List的迭代器的时候我们首先应该了解我们要写的List和其迭代器要做出什么样的功能。（学习书籍《C++STL基础应用》《STL源代码剖析》《泛型思维》）
+            Lambda表达式匿名函数有函数体，但没有函数名。匿名函数是很多高级语言都支持的概念，如lisp语言在1958年首先采用匿名函数。正因为如此，C++11也同样引入了lambda函数。在C++11中,你可以在源码中内联一个lambda函数，这就使得创建快速的、一次性的函数变得简单了。
 
-listlist相较于vector，list的好处是每次插入/删除一个数据，他就重新申请/释放一个空间，对内存的把握绝对的精准（vector是申请一片区域，超过此容量便进行“重新配置两倍区域，元素移动，释放原空间”）；另外 ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/27</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "STL学习笔记">STL学习笔记</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/09/23/Hexo博客发布——Markdown基础语法/" >
-            
-                <span>Hexo博客发布—Markdown基础语法</span>
-        </a>
-        <div class="abstract-content">
-            标题代码‘#’号后必须添加空格1234# h1## h2### h3#### h4
-效果演示Title 1Title1 2Title1 3Title1 4
-标题分级代码123456内容 1--------------------------（数量不限制，最好写两个以上）内容 2--------------------------内容 3--------------------------
-效果演示内容 1
-内容 2
-内容 3
-引用代码1234567891011&gt;单行引用&gt;多行引用 1&gt;多行引用 1&gt;多行引用 2多行引用 2&gt;多层嵌套引用&gt;&gt;多层嵌...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/23</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "很基础的Markdown语法及其效果演示">很基础的Markdown语法及其效果演示</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/09/22/hello-world/" >
-            
-                <span>Hello World</span>
-        </a>
-        <div class="abstract-content">
-            欢迎来到ChristmasError的个人主页，本博客主页创建于2018/9/22,使用HEXO+GithubPages创建。博客使用CSDN网页MARKDOWN编辑器编辑后添加123---title:(博客标题)---
-发布。
-测试博客代码嵌入测试123int main()&#123;	cout&lt;&lt;"Hellow World"&lt;&lt;endl;&#125;
-超级链接测试: 超链接-&gt;百度
+相同类似功能我们也可以使用函数对象或者函数指针实现：函数对象能维护状态，但语法开销大，而函数指针语法开销小，却没法保存范围内的状态。lambda表达式正是结合了两者的优点。
 
+声明Lambda表达式1234[capture list] (params list) mutable exception-&gt;...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/22</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/21</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "这是建立个人Blog来的第一篇测试博客">这是建立个人Blog来的第一篇测试博客</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Lambda表达式 Lambda函数">Lambda表达式 Lambda函数</a>
     
 </div>
             
