@@ -413,7 +413,45 @@ height:50vh;
 <h1 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h1><p>智能指针的行为类似常规指针，但与常规不同的是，<strong>它负责自动释放所指向对象</strong>。<br>新标准库提供的这两种智能指针的区别在于管理底层指针的方式：<br><strong>shared_ptr</strong>：允许多个指针指向同一个对象<br><strong>imoqie_ptr</strong>：“独占”所指向的对象<br>同时，标准库还提供了一个名为<strong>weak_ptr</strong>的伴随类：<br><strong>weak_ptr</strong>：它是一种<strong>弱引用</strong>，指向shared_ptr所管理的对象。</p>
 <p>以上三种类型都定义在<strong>memory头文件</strong>中。</p>
 <h2 id="shared-ptr类"><a href="#shared-ptr类" class="headerlink" title="shared_ptr类"></a>shared_ptr类</h2><p>shared_ptr类类似vector，智能指针也是一种模板（template）。因此在创建智能指针对象的时候，也必须提供<strong>指针指向的类型</strong>的信息。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p1;</span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="built_in">string</span>&gt; p2;</span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p3 (<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">16</span>)); <span class="comment">//正确</span></span><br><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p4 = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">16</span>);  <span class="comment">//错误</span></span><br></pre></td></tr></table></figure></p>
-<p>对于p3,p4,shared_ptr的构造函数是explicit的，因此我们不能将一个内置指针隐式转换为一个智能指针（p4的初始化隐式地要求编译器用一个new返回的int*来创建一个shared_ptr，因此是错误的）。<br>|shared_ptr和unique_ptr都支持的操作  | |<br>|:–|:–|<br>|shared_ptr&lt; T &gt;sp  |空智能指针，默认初始化的智能指针中保存着一个空指针|<br>|p  |将p作为一个条件判断，若p指向一个对象，则为true  |<br>|*p  |解引用p，获得p指向的对象  |<br>|p-&gt;mem|等价于(*p).mem|<br>|p.get()|返回p中保存的指针。小心使用，若智能指针释放了其对象，返回的指针所指向的对象也同时消失了。|<br>|swap(p,q)|交换p和q的指针|<br>|p.swap(q)|交换p和q的指针|</p>
+<p>对于p3,p4,shared_ptr的构造函数是explicit的，因此我们不能将一个内置指针隐式转换为一个智能指针（p4的初始化隐式地要求编译器用一个new返回的int*来创建一个shared_ptr，因此是错误的）。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">shared_ptr和unique_ptr都支持的操作</th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">shared_ptr&lt; T &gt;sp</td>
+<td style="text-align:left">空智能指针，默认初始化的智能指针中保存着一个空指针</td>
+</tr>
+<tr>
+<td style="text-align:left">p</td>
+<td style="text-align:left">将p作为一个条件判断，若p指向一个对象，则为true</td>
+</tr>
+<tr>
+<td style="text-align:left">*p</td>
+<td style="text-align:left">解引用p，获得p指向的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">p-&gt;mem</td>
+<td style="text-align:left">等价于(*p).mem</td>
+</tr>
+<tr>
+<td style="text-align:left">p.get()</td>
+<td style="text-align:left">返回p中保存的指针。小心使用，若智能指针释放了其对象，返回的指针所指向的对象也同时消失了。</td>
+</tr>
+<tr>
+<td style="text-align:left">swap(p,q)</td>
+<td style="text-align:left">交换p和q的指针</td>
+</tr>
+<tr>
+<td style="text-align:left">p.swap(q)</td>
+<td style="text-align:left">交换p和q的指针</td>
+</tr>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
@@ -807,22 +845,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 10
@@ -896,17 +918,17 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
     
-        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
-    
         <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
+    
+        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
+    
+        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
     
         <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
     
         <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
     
         <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
-    
-        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
