@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>ChristmasError-blog</title>
+    <title>C++hash_map 哈希表 · ChristmasError-blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -203,12 +203,23 @@
 </head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >ChristmasError-Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">C++hash_map 哈希表</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>ChristmasError-Blog</a>
 </header>
@@ -220,24 +231,74 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            C++hash_map 哈希表
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "hash_map 哈希表">hash_map 哈希表</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.6k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/10/23</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -338,45 +399,104 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/09/23/Hexo博客发布——Markdown基础语法/" >
-            
-                <span>Hexo博客发布—Markdown基础语法</span>
-        </a>
-        <div class="abstract-content">
-            标题代码‘#’号后必须添加空格1234# h1## h2### h3#### h4
-效果演示Title 1Title1 2Title1 3Title1 4
-标题分级代码123456内容 1--------------------------（数量不限制，最好写两个以上）内容 2--------------------------内容 3--------------------------
-效果演示内容 1
-内容 2
-内容 3
-引用代码1234567891011&gt;单行引用&gt;多行引用 1&gt;多行引用 1&gt;多行引用 2多行引用 2&gt;多层嵌套引用&gt;&gt;多层嵌...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/23</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "很基础的Markdown语法及其效果演示">很基础的Markdown语法及其效果演示</a>
-    
-</div>
-            
-        </div>
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="map与hash-map"><a href="#map与hash-map" class="headerlink" title="map与hash_map"></a>map与hash_map</h1><p>map与hash_map都是在C++STL中常用的数据结构。<br><strong>map</strong>：存储数据结构是采用红黑树实现，提供了key-value的存储和查找功能，查找速度可达log(n)。<br><strong>hash_map</strong>：基于hash_table（哈希表）储存，相对map来说，他的查找速度大大的降低，几乎可以看成是常熟时间；但是代价就是消耗更多的内存（但是在现在内存越来越大的情况下，用内存换时间的选择十分值得）。</p>
+<p>他们之间的区别：</p>
+<ul>
+<li><strong>构造函数</strong>：hash_map需要hash函数，比较函数（等于函数）；map只需要比较函数(小于函数)。</li>
+<li><p><strong>存储结构</strong>：hash_map采用hash表存储，map一般采用红黑树(RB Tree)实现。</p>
+<p>什么时候选择hash_map和map（使用场景）：</p>
+</li>
+<li>hash_map 查找速度会比map快，而且查找速度基本为数据数据量大小，属于常数级别。</li>
+<li>map的查找速度是log(n)级别。</li>
+</ul>
+<p>但这并不意味着一定常数就比log(n)小：因为在hash_map中，每一个元素的存储都需要经过hash函数转换为对应的hash值，这些都是需要时间的。<br>如果考虑查找效率并对内存大小没有要求，当元素达到一定数量级时，考虑hash_map。<br>如果要求尽可能少消耗内存，那么hash_map可能会不那么适合，特别是当hash_map对象特别多时，内存消耗就更大了，而且hash_map的构造速度也比较慢。</p>
+<p>总的来说，权衡他们因素有三个：<strong>查找速度, 数据量, 内存使用</strong>。</p>
+<h1 id="hash-map"><a href="#hash-map" class="headerlink" title="hash_map"></a>hash_map</h1><p>hash_map需要一个hash函数和比较函数（如果不提供，在符合的情况下，STL会为我们提供缺省的函数）：使用一个下标范围比较大的数组来存储元素其中的每个元素的关键字都与一个hash值（即数组下标）相对应，于是用这个数组单元来存储这个元素，这个数组单元称之为“桶。<br>那么如何获得hash值呢：在存储数据时，hash函数会根据数据的key值得到该数据的hash值。</p>
+<p>但也有例外的情况：hash值和元素关键字并不一定是一一对应的，根据hash函数很可能会对不同的元素的key生成相同的hash值，从而把不同的元素放在了相同的“桶”，这种情况称之为“冲突”。因此哈希表有“<strong>直接定址</strong>”与“<strong>解决冲突</strong>”两个特点。</p>
+<p>hash_map会在一开始分配一大片内存，形成许多“桶”。在之后插入元素时，根据以下步骤：</p>
+<ol>
+<li>获取元素的key值</li>
+<li>根据key值通过hash函数得到hash值</li>
+<li>得到该hash值的“桶”号</li>
+<li><p>将元素（key和value）存放在“桶”中</p>
+<p>而查找元素的步骤为：</p>
+</li>
+<li><p>获得key值</p>
+</li>
+<li>根据key值通过hash函数得到hash值</li>
+<li>得到相应的“桶”号</li>
+<li>比较桶内元素是否与key值相同</li>
+<li>（若存在该key对应的数据）取出该key的value</li>
+</ol>
+<h2 id="使用hash-map"><a href="#使用hash-map" class="headerlink" title="使用hash_map"></a>使用hash_map</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;hash_map&gt;</span></span></span><br><span class="line"><span class="comment">//细节省略......</span></span><br><span class="line">hash_map&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; hashmap;</span><br><span class="line"><span class="comment">//STL会为我们缺省的提供hash函数与比较函数</span></span><br><span class="line"><span class="comment">//该声明等同于hash_map&lt;string, int, hash&lt;string&gt;, equal_to&lt;int&gt; &gt; mymap;</span></span><br></pre></td></tr></table></figure>
+<p>C++支持的提供缺省hash函数对应的数据类型有：char<em>，const char</em>，char，unsigned char，signed char，short，unsigned short，int ，unsigned int，long ，unsigned long<br>也就是说，以上的数据类型，STL会为我们提供缺省的hash函数；而对于其他的数据类型，我们需要自己提供（例如string）：</p>
+<h3 id="自定义hash函数"><a href="#自定义hash函数" class="headerlink" title="自定义hash函数"></a>自定义hash函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyHash</span>&#123;</span></span><br><span class="line">        <span class="keyword">size_t</span> <span class="keyword">operator</span>()(<span class="keyword">const</span> <span class="built_in">string</span>&amp; str) <span class="keyword">const</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">unsigned</span> <span class="keyword">long</span> hash_value = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span> ; i &lt; str.size() ; i ++)</span><br><span class="line">                hash_value= <span class="number">5</span>*hash_value+ str[i];</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">size_t</span>(hash_value);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>声明自己的hash函数需要遵循以下几点：</p>
+<ol>
+<li>使用strut ，并重载operator()</li>
+<li>返回 size_t</li>
+<li>形参需要为hash的key的数据类型</li>
+<li>const函数</li>
+</ol>
+<p>写出了自己的hash函数，上面的hash_map声明需要改为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash_map&lt;<span class="built_in">string</span>, <span class="keyword">int</span> , MyHash&gt; hashmap;</span><br></pre></td></tr></table></figure></p>
+<p>接下来写比较函数：</p>
+<h3 id="自定义比较函数"><a href="#自定义比较函数" class="headerlink" title="自定义比较函数"></a>自定义比较函数</h3><p>在hash_map中，要比较桶内的数据和key是否相等 。<br>假如我们存储的是一个自定义数据类型：<br><strong>第一种设计比较函数的方法，就是重载==操作符，使用equal_to比较：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stu</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> ID;</span><br><span class="line">	<span class="keyword">int</span> data;</span><br><span class="line">	<span class="comment">//重载==</span></span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span> == (<span class="keyword">const</span> stu &amp; Temp)&#123;</span><br><span class="line">		<span class="keyword">return</span> ((ID==Temp.ID)&amp;&amp;(data==Temp.data));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>重载了stu数据结构的==之后，使用equal_to</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash_map&lt;<span class="built_in">string</span>, stu, MyHash,equal_to&lt;stu&gt;&gt; hashmap;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>equal_to的定义：<br>template \<class _tp\=""><br>struct equal_to : public binary_function&lt;_Tp,_Tp,bool&gt;<br>{<br>        bool operator()(const _Tp&amp; <strong>x, const _Tp&amp; </strong>y) const { return <strong>x == </strong>y; }<br>};</class></p>
+</blockquote>
+<p><strong>另一种方法，就是写一个函数对象</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">compare_func</span>&#123;</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s1,<span class="keyword">const</span> <span class="keyword">char</span>* s2)</span> <span class="keyword">const</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">strcmp</span>(s1,s2)==<span class="number">0</span>;        </span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在有了conpare_func之后,就可以使用hash_map了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash_map&lt;<span class="keyword">const</span> <span class="keyword">char</span>*a,<span class="built_in">string</span> , hash&lt;<span class="keyword">const</span> <span class="keyword">char</span>*&gt;, compare_func&gt; StrMap;</span><br></pre></td></tr></table></figure>
+<p>使用typedef定义hash_map</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> hash_map&lt;<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="built_in">string</span>, hash&lt;<span class="keyword">const</span> <span class="keyword">char</span>*&gt;, compare_str&gt; StrMap;</span><br><span class="line"><span class="comment">//..........</span></span><br><span class="line">StrMap mymap;</span><br><span class="line">mymap[<span class="string">"ABC"</span>]=<span class="string">"aaaaaaa"</span>;</span><br><span class="line">mymap[<span class="string">"EFG"</span>]=<span class="string">"bbbbbbb"</span>;</span><br><span class="line"><span class="comment">//..........</span></span><br></pre></td></tr></table></figure>
+<p>因此如果我们想在hash_map中加入自己的数据类型，我们只需要做两件事：<strong>你只要做两件事,定义hash函数，定义比较（等于）函数</strong></p>
+<h1 id="hash-map-函数"><a href="#hash-map-函数" class="headerlink" title="hash_map 函数"></a>hash_map 函数</h1><p>hash_map的函数和map的函数差别不大，以下为常用的函数</p>
+<ol>
+<li><strong>hash_map(size_type n)</strong>：为了程序运行效率，这个参数十分重要，n为hash桶的个数，个数越多，hash_map发生冲突的概率就越小，效率也越高；但相应的内存消耗会变大。</li>
+<li><strong>const_iterator find(const key_type&amp; k) const</strong>：用于查找，参数为key值，返回一个该参数位置的迭代器。</li>
+<li><strong>data_type&amp;operator<a href="const key_type&amp; k"></a></strong>：类似map的[key]下标查找，但注意的是与map一样，若无对应key的数据，会增加一个key的元素。</li>
+<li><strong>const_iterator find(const key&amp; key) const</strong>：find()函数可与上一条[key]下标查找相对应，若无该key元素存在，他不会增加一个该key的元素。</li>
+<li><strong>insert 函数</strong>：在容器中不包含key值时，insert函数和[]操作符的功能差不多，但注意的是，当元素越来越多，为了效率，程序会申请更多的内存以存放更多的桶及其元素，这时在insert后，iterator不一定依然有效。</li>
+<li><strong>erase 函数</strong>：但在SGI STL中，erase并不会自动回收内存，因此调用erase后，其他元素的iterator还是可用的。</li>
+</ol>
+<h1 id="相关的hash容器"><a href="#相关的hash容器" class="headerlink" title="相关的hash容器"></a>相关的hash容器</h1><p>容器有set, multimap, multiset<br>hash 容器除了hash_map之外，还有hash_set, hash_multimap, has_multiset<br>这些容器使用起来和（set, multimap, multiset的区别）与（hash_map和map的区别）一样。</p>
+
     </article>
+    <!-- license  -->
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/10/21/C++11 Lambda表达式/" title= "C++11 Lambda表达式">
+                    <div class="prevTitle">C++11 Lambda表达式</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
 </main>
             <!-- profile -->
             
@@ -472,6 +592,24 @@
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#map与hash-map"><span class="toc-number">1.</span> <span class="toc-text">map与hash_map</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hash-map"><span class="toc-number">2.</span> <span class="toc-text">hash_map</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用hash-map"><span class="toc-number">2.1.</span> <span class="toc-text">使用hash_map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义hash函数"><span class="toc-number">2.1.1.</span> <span class="toc-text">自定义hash函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义比较函数"><span class="toc-number">2.1.2.</span> <span class="toc-text">自定义比较函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hash-map-函数"><span class="toc-number">3.</span> <span class="toc-text">hash_map 函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#相关的hash容器"><span class="toc-number">4.</span> <span class="toc-text">相关的hash容器</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -801,6 +939,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
