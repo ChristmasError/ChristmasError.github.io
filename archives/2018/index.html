@@ -346,7 +346,71 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/11/17/C++ RBTree红黑树的实现/" >
+        <a class="abstract-title" href = "/2018/12/27/C++ BST-Binary Search Tree 二叉搜索树的实现/" >
+            
+                <span>C++ BST-binary search tree 二叉搜索树的实现</span>
+        </a>
+        <div class="abstract-content">
+            BST 二叉搜索树(binary search tree)二叉搜索树只能为空树，或者是具有下列性质的二叉树
+
+若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值； 
+若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+它的左、右子树也分别为二叉排序树树节点
+
+12345678910//Tree_Node.h#pragma oncestruct TreeNode&#123;	int val;	TreeNode* left = nullptr;	TreeNode* right=nullptr;	TreeNode* parent = nullptr;	TreeNode(i...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/27</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++ 数据结构 BST">C++ 数据结构 BST</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/12/20/C++ GeneralizedTable 广义表实现/" >
+            
+                <span>C++ GeneralizedTable 广义表实现</span>
+        </a>
+        <div class="abstract-content">
+            结点123456789101112131415161718192021222324252627////Generalized_node.h#include&lt;iostream&gt;#include&lt;assert.h&gt;enum Nodetype&#123;	HEAD,	VALUE,	SUB,&#125;;struct Generalized_node &#123;	Nodetype _type;	Generalized_node *_next;	union &#123;		char _value;		Generalized_node *_sub;	&#125;;	Gene...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/20</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++ 数据结构 广义表">C++ 数据结构 广义表</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/11/17/C++ RBTree 红黑树的实现/" >
             
                 <span>C++ RBTree红黑树的实现</span>
         </a>
@@ -592,82 +656,6 @@ const指针是指针变量的值一经初始化，就不可以改变指向，初
             <!-- date  -->
             <div class="abstract-date">
                 <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/15</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "《深入了解计算机系统》">《深入了解计算机系统》</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/15/《深入理解计算机系统》笔记——信息的表示和处理/" >
-            
-                <span>《深入了解计算机系统》笔记——信息的表示和处理</span>
-        </a>
-        <div class="abstract-content">
-            
-信息的存储
-十六进制表示法
-字
-数据大小
-寻址和字节顺序
-数据类型
-字符串的表示
-代码的表示
-
-信息的存储信息是客观事物的反映，是经过处理加工后得出的数据。数据是客观事物的记录。计算机内所有的信息均以二进制的形式表示，也就是由值0和值1组成的序列。大多数计算机使用8位的块(字节)，来作为最小的可寻址的存储器单位，而不是在存储器中访问单独的位。
-
-（”位(bit)”是电子计算机中最小的数据单位，每一位的状态只能是0或1。8个二进制位构成1个”字节(Byte)”）
-
-也就是说，我们访问计算机最小的单位是八个位构成的字节，而不是值0或值1的单个位。程序会将存储器视为一个非常大的字节数组，称为...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/15</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "《深入了解计算机系统》">《深入了解计算机系统》</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/13/《深入理解计算机系统》笔记——计算机系统漫游/" >
-            
-                <span>《深入了解计算机系统》笔记——计算机系统漫游</span>
-        </a>
-        <div class="abstract-content">
-            1.计算机系统由硬件与软件组成，他们共同工作来运行程序。
-2.信息的表示1234567#include &lt;stdio.h&gt; int main()&#123; printf("Hello World\n"); return 0;    //c标准规定建议main函数返回值为int&#125;
-编写程序时将上面的 Hello World 程序保存在一个 hello.c 的文件中，他将以字序列方式存储在文件中。
-
-字：由若干个字节构成，字的位数叫做字长，不同档次的机器有不同的字长。例如一台8位机，它的1个字就等于1个字节，字长为8位。如果是一台16位机，那么，它的1个字就由2个字节...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/13</span>
             </div>
             <!-- tags  -->
             
@@ -956,9 +944,27 @@ const指针是指针变量的值一经初始化，就不可以改变指向，初
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 14
+        Total : 16
         </div>
         <!-- search  -->
         
@@ -974,7 +980,17 @@ const指针是指针变量的值一经初始化，就不可以改变指向，初
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">11/17</span><a class="archive-post-title" href= "/2018/11/17/C++ RBTree红黑树的实现/" >C++ RBTree红黑树的实现</a>
+            <span class="archive-post-date">12/27</span><a class="archive-post-title" href= "/2018/12/27/C++ BST-Binary Search Tree 二叉搜索树的实现/" >C++ BST-binary search tree 二叉搜索树的实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/20</span><a class="archive-post-title" href= "/2018/12/20/C++ GeneralizedTable 广义表实现/" >C++ GeneralizedTable 广义表实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/17</span><a class="archive-post-title" href= "/2018/11/17/C++ RBTree 红黑树的实现/" >C++ RBTree红黑树的实现</a>
         </li>
     
     
@@ -1047,21 +1063,25 @@ const指针是指针变量的值一经初始化，就不可以改变指向，初
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="C++ 数据结构 BST"><span class="iconfont-archer">&#xe606;</span>C++ 数据结构 BST</span>
+    
         <span class="sidebar-tag-name" data-tags="Lambda表达式 Lambda函数"><span class="iconfont-archer">&#xe606;</span>Lambda表达式 Lambda函数</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++ 数据结构 广义表"><span class="iconfont-archer">&#xe606;</span>C++ 数据结构 广义表</span>
+    
+        <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
     
         <span class="sidebar-tag-name" data-tags="C++ 红黑树 数据结构 RBTree"><span class="iconfont-archer">&#xe606;</span>C++ 红黑树 数据结构 RBTree</span>
     
         <span class="sidebar-tag-name" data-tags="hash_map 哈希表"><span class="iconfont-archer">&#xe606;</span>hash_map 哈希表</span>
     
-        <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
+        <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
     
         <span class="sidebar-tag-name" data-tags="RAII"><span class="iconfont-archer">&#xe606;</span>RAII</span>
     
         <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
     
         <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
-    
-        <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
     
         <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
     

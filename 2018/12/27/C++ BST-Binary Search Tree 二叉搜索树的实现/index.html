@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="ChristmasError">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="ChristmasError">
+    
+    <meta name="keywords" content="ChristmasError,ChristmasError-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>C++ BST-binary search tree 二叉搜索树的实现 · ChristmasError-blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/smallHakase.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >ChristmasError-Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">C++ BST-binary search tree 二叉搜索树的实现</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>ChristmasError-Blog</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            C++ BST-binary search tree 二叉搜索树的实现
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++ 数据结构 BST">C++ 数据结构 BST</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.2k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/12/27</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="BST-二叉搜索树-binary-search-tree"><a href="#BST-二叉搜索树-binary-search-tree" class="headerlink" title="BST 二叉搜索树(binary search tree)"></a>BST 二叉搜索树(binary search tree)</h1><p>二叉搜索树只能为空树，或者是具有下列性质的二叉树</p>
+<ul>
+<li>若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值； </li>
+<li>若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值；</li>
+<li>它的左、右子树也分别为二叉排序树<h1 id="树节点"><a href="#树节点" class="headerlink" title="树节点"></a>树节点</h1></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Tree_Node.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TreeNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	TreeNode* left = <span class="literal">nullptr</span>;</span><br><span class="line">	TreeNode* right=<span class="literal">nullptr</span>;</span><br><span class="line">	TreeNode* parent = <span class="literal">nullptr</span>;</span><br><span class="line">	TreeNode(<span class="keyword">int</span> v) :val(v) &#123;  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="BST树"><a href="#BST树" class="headerlink" title="BST树"></a>BST树</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Binary_Search_Tree.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">"Tree_Node.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BST</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	TreeNode* _root=<span class="literal">nullptr</span>;</span><br><span class="line">	<span class="comment">//typedef TreeNode Node;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">void</span> _createBST( <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;vec);</span><br><span class="line">	TreeNode* _find(<span class="keyword">int</span> k);</span><br><span class="line">	<span class="keyword">void</span> _insertnode(<span class="keyword">int</span> a);</span><br><span class="line">	<span class="keyword">void</span> _removenode( <span class="keyword">int</span> a);</span><br><span class="line">	<span class="keyword">void</span> _inorderprint(TreeNode * node);</span><br><span class="line">	<span class="keyword">void</span> _preorderprint(TreeNode * node);</span><br><span class="line">	<span class="keyword">void</span> _postorderprint(TreeNode * node);</span><br><span class="line">	<span class="comment">//void _destory();</span></span><br><span class="line">	<span class="function">TreeNode* <span class="title">Predecessor</span><span class="params">(<span class="keyword">int</span> a)</span></span>;<span class="comment">//寻找前驱节点</span></span><br><span class="line">	<span class="function">TreeNode* <span class="title">Successor</span><span class="params">(<span class="keyword">int</span> a)</span></span>;<span class="comment">//寻找后继节点</span></span><br><span class="line">	</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	BST() &#123;&#125;;</span><br><span class="line">	BST(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;vec) &#123; _createBST( vec); &#125;;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//~BST() &#123; _destory(); &#125;;</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">inorderprint</span><span class="params">()</span> </span>&#123; _inorderprint(_root); &#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">preorderprint</span><span class="params">()</span> </span>&#123; _preorderprint(_root); &#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">postorderprint</span><span class="params">()</span> </span>&#123; _postorderprint(_root); &#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123; _insertnode(a); &#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123; _removenode( a); &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//vector&lt;int&gt;构造BST</span></span><br><span class="line"><span class="keyword">void</span> BST::_createBST(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;vec)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> val : vec)</span><br><span class="line">		_insertnode(val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//查找key的结点</span></span><br><span class="line">TreeNode* BST::_find(<span class="keyword">int</span> key)</span><br><span class="line">&#123;</span><br><span class="line">	TreeNode* cur=_root;</span><br><span class="line">	<span class="keyword">while</span> (cur-&gt;val!=key &amp;&amp; cur!=<span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (key &gt; cur-&gt;val)</span><br><span class="line">			cur = cur-&gt;right;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			cur = cur-&gt;left;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(cur!=<span class="literal">nullptr</span>)</span><br><span class="line">		<span class="keyword">return</span> cur;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"BST do not have this node!\n "</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//插入结点</span></span><br><span class="line"><span class="keyword">void</span> BST::_insertnode(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">	TreeNode* node = <span class="keyword">new</span> TreeNode(a);</span><br><span class="line">	<span class="keyword">if</span> (_root == <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		_root = node;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		TreeNode* cur = _root;</span><br><span class="line">		<span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//新结点的值大于当前结点cur</span></span><br><span class="line">			<span class="keyword">if</span> (node-&gt;val &gt; cur-&gt;val)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(cur-&gt;right!=<span class="literal">nullptr</span>)</span><br><span class="line">					cur = cur-&gt;right;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					cur-&gt;right = node;</span><br><span class="line">					node-&gt;parent = cur;</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//新结点的值小于当前结点cur</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (cur-&gt;left!= <span class="literal">nullptr</span>)</span><br><span class="line">					cur = cur-&gt;left;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					cur-&gt;left = node;</span><br><span class="line">					node-&gt;parent = cur;</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//寻找前驱节点</span></span><br><span class="line">TreeNode* BST::Predecessor(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">	TreeNode* cur = _find(a);</span><br><span class="line">	<span class="keyword">if</span> (cur-&gt;left != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		cur = cur-&gt;left;</span><br><span class="line">		<span class="keyword">while</span> (cur-&gt;right != <span class="literal">nullptr</span>)</span><br><span class="line">			cur = cur-&gt;right;</span><br><span class="line">		<span class="keyword">return</span> cur;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (cur-&gt;parent != <span class="literal">nullptr</span> &amp;&amp; cur-&gt;parent-&gt;left == cur)</span><br><span class="line">		cur = cur-&gt;parent;</span><br><span class="line">	<span class="keyword">return</span> cur-&gt;parent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//寻找后继节点</span></span><br><span class="line">TreeNode* BST::Successor(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">	TreeNode* cur = _find(a);</span><br><span class="line">	<span class="comment">//cur右结点不为空，则cur后继结点为右子树最靠左的结点</span></span><br><span class="line">	<span class="keyword">if</span> (cur-&gt;right != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		cur = cur-&gt;right;</span><br><span class="line">		<span class="comment">//存在左子树</span></span><br><span class="line">		<span class="keyword">while</span> (cur-&gt;left != <span class="literal">nullptr</span>)</span><br><span class="line">			cur = cur-&gt;left;</span><br><span class="line">		<span class="keyword">return</span> cur;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//cur的右结点不存在左子树，向上找父节点第一个有右孩子且不存在cur的祖先</span></span><br><span class="line">	<span class="keyword">while</span> (cur-&gt;parent != <span class="literal">nullptr</span> &amp;&amp; cur-&gt;parent-&gt;right != cur)</span><br><span class="line">		cur = cur-&gt;parent;</span><br><span class="line">	<span class="keyword">return</span> cur-&gt;parent;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//删除值为a的结点</span></span><br><span class="line"><span class="keyword">void</span> BST::_removenode(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (_root == <span class="literal">nullptr</span>)</span><br><span class="line">		<span class="keyword">throw</span>(<span class="string">"error : it's an empty BSTtree!\n"</span>);</span><br><span class="line">	TreeNode* dnode = _find(a);<span class="comment">//找出需要删除的结点dnode</span></span><br><span class="line">	TreeNode* temp;<span class="comment">//temp为取代dnode的结点</span></span><br><span class="line">	<span class="keyword">if</span> (dnode-&gt;left == <span class="literal">nullptr</span> &amp;&amp; dnode-&gt;right == <span class="literal">nullptr</span>)<span class="comment">//情况1，删除节点为子节点</span></span><br><span class="line">		temp = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (dnode-&gt;left == <span class="literal">nullptr</span> || dnode-&gt;right == <span class="literal">nullptr</span>)<span class="comment">//情况2，删除节点只有左或者右子树</span></span><br><span class="line">	&#123;</span><br><span class="line">		temp = (dnode-&gt;left == <span class="literal">nullptr</span>) ? dnode-&gt;right : dnode-&gt;left;</span><br><span class="line">		temp-&gt;parent = dnode-&gt;parent;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		temp = Successor(a);</span><br><span class="line">		TreeNode* temp_right;</span><br><span class="line">		<span class="keyword">if</span> (temp-&gt;right == <span class="literal">nullptr</span>)</span><br><span class="line">			temp_right = <span class="literal">nullptr</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			temp_right = temp-&gt;right;</span><br><span class="line">			temp_right-&gt;parent = temp-&gt;parent;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (temp-&gt;parent-&gt;right == temp)</span><br><span class="line">			temp-&gt;parent-&gt;right = temp_right;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			temp-&gt;parent-&gt;left = temp_right;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//temp取代dnode，注意dnode为根节点情况</span></span><br><span class="line">		<span class="keyword">if</span> (dnode-&gt;parent == <span class="literal">nullptr</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			temp-&gt;right = dnode-&gt;right;</span><br><span class="line">			temp-&gt;left = dnode-&gt;left;</span><br><span class="line">			_root = temp;</span><br><span class="line">			<span class="keyword">delete</span> dnode;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (dnode-&gt;parent-&gt;right == dnode)</span><br><span class="line">		&#123;</span><br><span class="line">			dnode-&gt;parent-&gt;right = temp;</span><br><span class="line">			temp-&gt;parent = dnode-&gt;parent;</span><br><span class="line">			temp-&gt;right = dnode-&gt;right;</span><br><span class="line">			temp-&gt;left = dnode-&gt;left;</span><br><span class="line">			<span class="keyword">delete</span> dnode;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			dnode-&gt;parent-&gt;left = temp;</span><br><span class="line">			temp-&gt;parent = dnode-&gt;parent;</span><br><span class="line">			temp-&gt;right = dnode-&gt;right;</span><br><span class="line">			temp-&gt;left = dnode-&gt;left;</span><br><span class="line">			<span class="keyword">delete</span> dnode;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//或者不取代dnode，将temp和dnode进行数据交换</span></span><br><span class="line">		<span class="comment">//dnode-&gt;val = temp-&gt;val;</span></span><br><span class="line">		<span class="comment">//delete temp;</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//情况1,2余下操作，注意删除节点为根节点的特殊情况</span></span><br><span class="line">	<span class="keyword">if</span> (dnode-&gt;parent != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (dnode-&gt;parent-&gt;right == dnode)</span><br><span class="line">			dnode-&gt;parent-&gt;right = temp;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			dnode-&gt;parent-&gt;left = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		_root = temp;</span><br><span class="line">	<span class="keyword">delete</span> dnode;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//前中后序打印BST</span></span><br><span class="line"><span class="keyword">void</span> BST::_inorderprint(TreeNode * node)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="literal">nullptr</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="built_in">std</span>:: <span class="built_in">cout</span> &lt;&lt; node-&gt;val &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">	_inorderprint(node-&gt;left);</span><br><span class="line">	_inorderprint(node-&gt;right);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">void</span> BST::_preorderprint(TreeNode * node)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="literal">nullptr</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	_preorderprint(node-&gt;left);</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; node-&gt;val &lt;&lt; <span class="string">' '</span>;</span><br><span class="line">	_preorderprint(node-&gt;right);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">void</span> BST::_postorderprint(TreeNode * node)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="literal">nullptr</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	_postorderprint(node-&gt;left);</span><br><span class="line">	_postorderprint(node-&gt;right);</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; node-&gt;val&lt;&lt;<span class="string">' '</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="测试运行结果"><a href="#测试运行结果" class="headerlink" title="测试运行结果"></a>测试运行结果</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//test.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">"Binary_Search_Tree.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vec&#123;<span class="number">8</span>,<span class="number">3</span>,<span class="number">10</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">7</span>,<span class="number">14</span>,<span class="number">13</span> &#125;;</span><br><span class="line">	<span class="function">BST <span class="title">bstree</span><span class="params">(vec)</span></span>;</span><br><span class="line">	bstree.inorderprint();</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"\n"</span>;</span><br><span class="line">	bstree.preorderprint();</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">	bstree.postorderprint();</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"\ndelete node key = 6\n"</span>;</span><br><span class="line">	bstree.remove(<span class="number">6</span>);</span><br><span class="line">	bstree.preorderprint();</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"\ndelete node key = 8\n"</span>;</span><br><span class="line">	bstree.remove(<span class="number">8</span>);</span><br><span class="line">	bstree.preorderprint();</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"\ndelete node key = 13\n"</span>;</span><br><span class="line">	bstree.remove(<span class="number">13</span>);</span><br><span class="line">	bstree.preorderprint();</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20181127155734603.png?xmage/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjY1ODkw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>代码：<br><a href="https://github.com/ChristmasError/Data_Structure/tree/master/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%20BST-Binary%20Search%20Tree" target="_blank" rel="noopener">https://github.com/ChristmasError/Data_Structure/tree/master/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%20BST-Binary%20Search%20Tree</a></p>
+
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/12/20/C++ GeneralizedTable 广义表实现/" title= "C++ GeneralizedTable 广义表实现">
+                    <div class="prevTitle">C++ GeneralizedTable 广义表实现</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:737180732@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ChristmasError" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/Wechat.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/QQ.png" />
+                </span>
+            
+        
+    
+        
+            
+                <a href="https://steamcommunity.com/profiles/76561198327585119/" class="iconfont-archer steam" target="_blank" title=steam></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">Visit & Clik: <span id="busuanzi_value_site_pv"></span></span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#BST-二叉搜索树-binary-search-tree"><span class="toc-number">1.</span> <span class="toc-text">BST 二叉搜索树(binary search tree)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#树节点"><span class="toc-number">2.</span> <span class="toc-text">树节点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#BST树"><span class="toc-number">3.</span> <span class="toc-text">BST树</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#测试运行结果"><span class="toc-number">4.</span> <span class="toc-text">测试运行结果</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 16
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/27</span><a class="archive-post-title" href= "/2018/12/27/C++ BST-Binary Search Tree 二叉搜索树的实现/" >C++ BST-binary search tree 二叉搜索树的实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/20</span><a class="archive-post-title" href= "/2018/12/20/C++ GeneralizedTable 广义表实现/" >C++ GeneralizedTable 广义表实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/17</span><a class="archive-post-title" href= "/2018/11/17/C++ RBTree 红黑树的实现/" >C++ RBTree红黑树的实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/04</span><a class="archive-post-title" href= "/2018/11/04/C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）/" >C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/23</span><a class="archive-post-title" href= "/2018/10/23/C++STL中的hash_map 哈希表/" >C++hash_map 哈希表</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/21</span><a class="archive-post-title" href= "/2018/10/21/C++11 Lambda表达式/" >C++11 Lambda表达式</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/20</span><a class="archive-post-title" href= "/2018/10/20/C++智能指针shared_ptr，uniqe_ptr，weak_ptr/" >C++智能指针：shared_ptr,unique_ptr,weak_ptr</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/18</span><a class="archive-post-title" href= "/2018/10/18/C++中const的“就近原则”/" >C++中const的“就近原则”</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/17</span><a class="archive-post-title" href= "/2018/10/17/《深入了解计算机系统》笔记——优化程序性能/" >《深入了解计算机系统》笔记——程序性能优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/15</span><a class="archive-post-title" href= "/2018/10/15/《深入了解计算机系统》笔记——汇编语言和机器语言/" >《深入了解计算机系统》笔记——汇编语言和机器语言</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/15</span><a class="archive-post-title" href= "/2018/10/15/《深入理解计算机系统》笔记——信息的表示和处理/" >《深入了解计算机系统》笔记——信息的表示和处理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/13</span><a class="archive-post-title" href= "/2018/10/13/《深入理解计算机系统》笔记——计算机系统漫游/" >《深入了解计算机系统》笔记——计算机系统漫游</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/2018/10/10/归并排序——leetcode144排序链表/" >leetcode刷题笔记：144排序链表——归并排序</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/27</span><a class="archive-post-title" href= "/2018/09/27/泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）/" >泛型编程学习，编写一个类似STL库中的简易list的迭代器（iterator）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/23</span><a class="archive-post-title" href= "/2018/09/23/Hexo博客发布——Markdown基础语法/" >Hexo博客发布—Markdown基础语法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span><a class="archive-post-title" href= "/2018/09/22/hello-world/" >Hello World</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="C++ 数据结构 BST"><span class="iconfont-archer">&#xe606;</span>C++ 数据结构 BST</span>
+    
+        <span class="sidebar-tag-name" data-tags="Lambda表达式 Lambda函数"><span class="iconfont-archer">&#xe606;</span>Lambda表达式 Lambda函数</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++ 数据结构 广义表"><span class="iconfont-archer">&#xe606;</span>C++ 数据结构 广义表</span>
+    
+        <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
+    
+        <span class="sidebar-tag-name" data-tags="C++ 红黑树 数据结构 RBTree"><span class="iconfont-archer">&#xe606;</span>C++ 红黑树 数据结构 RBTree</span>
+    
+        <span class="sidebar-tag-name" data-tags="hash_map 哈希表"><span class="iconfont-archer">&#xe606;</span>hash_map 哈希表</span>
+    
+        <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
+    
+        <span class="sidebar-tag-name" data-tags="RAII"><span class="iconfont-archer">&#xe606;</span>RAII</span>
+    
+        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
+    
+        <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
+    
+        <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
+    
+        <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
+    
+        <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "ChristmasError"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
