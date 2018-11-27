@@ -346,26 +346,28 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/18/C++中const的“就近原则”/" >
+        <a class="abstract-title" href = "/2018/11/04/C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）/" >
             
-                <span>C++中const的“就近原则”</span>
+                <span>C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）</span>
         </a>
         <div class="abstract-content">
-            在做题的时候，编译时经常会遇到关于const的坑，如果在平时不是常用的话就会很容易忘记，在这里整理一下const的“就近原则”的笔记。
-指针要理解就近原则首先要明白指针。指针（pointer），可以看作指向（point to）。与引用类似，实现了对其他对象的间接访问。但有两个不同之处：1.指针本身就是一个对象，允许对指针赋值和拷贝，并且指针在周期内可以先后指向几个不同的对象（除非是const指针）
+            RAII技术（资源获取即初始化——Resource Acquisition Is Initialization）编写程序我们经常会使用new或者mallco来向系统申请内存，但我们也会可能忘记使用delete去释放他们，而这种不释放手动申请的资源的后果是十分严重（内存溢出 memory overflow）。这时候RAII技术应运而生。
+RAII惯用法是在Bjarne Stroustrup的《C++程序设计语言（第3版）》一书中有讲到：
 
-const指针是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：int * const pTwo;    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变...
+使用局部对象管理资源的技术通常称为“资源获取就是初始化”。这种通用技术依赖于构造函数和析构函数的性质以及它们与异常处理的交互作用
+
+总结RAII技术就类...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/18</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/04</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "指针，const">指针，const</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "RAII">RAII</a>
     
 </div>
             

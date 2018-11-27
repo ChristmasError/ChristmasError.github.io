@@ -346,26 +346,30 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/18/C++中const的“就近原则”/" >
+        <a class="abstract-title" href = "/2018/11/17/C++ RBTree红黑树的实现/" >
             
-                <span>C++中const的“就近原则”</span>
+                <span>C++ RBTree红黑树的实现</span>
         </a>
         <div class="abstract-content">
-            在做题的时候，编译时经常会遇到关于const的坑，如果在平时不是常用的话就会很容易忘记，在这里整理一下const的“就近原则”的笔记。
-指针要理解就近原则首先要明白指针。指针（pointer），可以看作指向（point to）。与引用类似，实现了对其他对象的间接访问。但有两个不同之处：1.指针本身就是一个对象，允许对指针赋值和拷贝，并且指针在周期内可以先后指向几个不同的对象（除非是const指针）
+            红黑树的性质
+每个结点不是红色就是黑色
+根节点是黑色的
+如果一个根节点是红色的，则它的两个叶子结点是黑色的(没有两个连续的红色结点)
+对于每个结点，从该结点到其所有后代叶结点的简单路径上，均包含相同数目的黑色结点(每条路径上黑色结点的数量相等)
+所有叶子结点为黑（与平时不同，这里的叶子结点是指空的叶子结点，即为NULL）
 
-const指针是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：int * const pTwo;    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变...
+红黑树是一种特殊的二叉查找树，这意味着它满足二叉查找树的特征：任意一个节点所包含的键值，大于等于左孩子的键值，小于等于右孩子的键值。（相较于二叉查找树，我们只要对结点的颜色进行判断和调整）。红黑树虽然复杂，但它的最坏情况运行时间也是非常良好的，它可以在O(log n)...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/18</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/17</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "指针，const">指针，const</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "C++ 红黑树 数据结构 RBTree">C++ 红黑树 数据结构 RBTree</a>
     
 </div>
             

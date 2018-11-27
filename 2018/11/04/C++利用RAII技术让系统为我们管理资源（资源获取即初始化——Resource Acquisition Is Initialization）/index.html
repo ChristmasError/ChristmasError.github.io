@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>ChristmasError-blog</title>
+    <title>C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization） · ChristmasError-blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -203,12 +203,23 @@
 </head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >ChristmasError-Blog</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>ChristmasError-Blog</a>
 </header>
@@ -220,24 +231,74 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "RAII">RAII</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.2k</span>阅读时长: <span class="post-count reading-time">4 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/11/04</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -338,42 +399,71 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/18/C++中const的“就近原则”/" >
-            
-                <span>C++中const的“就近原则”</span>
-        </a>
-        <div class="abstract-content">
-            在做题的时候，编译时经常会遇到关于const的坑，如果在平时不是常用的话就会很容易忘记，在这里整理一下const的“就近原则”的笔记。
-指针要理解就近原则首先要明白指针。指针（pointer），可以看作指向（point to）。与引用类似，实现了对其他对象的间接访问。但有两个不同之处：1.指针本身就是一个对象，允许对指针赋值和拷贝，并且指针在周期内可以先后指向几个不同的对象（除非是const指针）
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="RAII技术（资源获取即初始化——Resource-Acquisition-Is-Initialization）"><a href="#RAII技术（资源获取即初始化——Resource-Acquisition-Is-Initialization）" class="headerlink" title="RAII技术（资源获取即初始化——Resource Acquisition Is Initialization）"></a>RAII技术（资源获取即初始化——Resource Acquisition Is Initialization）</h1><p>编写程序我们经常会使用new或者mallco来向系统申请内存，但我们也会可能忘记使用delete去释放他们，而这种不释放手动申请的资源的后果是十分严重（内存溢出 memory overflow）。这时候RAII技术应运而生。</p>
+<p>RAII惯用法是在Bjarne Stroustrup的《C++程序设计语言（第3版）》一书中有讲到：</p>
+<blockquote>
+<p>使用局部对象管理资源的技术通常称为“资源获取就是初始化”。这种通用技术依赖于构造函数和析构函数的性质以及它们与异常处理的交互作用</p>
+</blockquote>
+<p>总结RAII技术就类似以下几点：</p>
+<ul>
+<li>将将要申请的资源封装到类内(构造函数&amp;析构函数)。</li>
+<li>通过类的本地实例使用资源（类的对象）</li>
+<li>当对象超出作用域（scope）时，资源将自动释放（系统自动调用析构函数）。</li>
+</ul>
+<p>这保证了无论在资源使用期间发生什么，它最终都会被释放(不管是由于正常返回、销毁包含的对象，还是引发异常)。<br>RAII的本质内容是用对象代表资源，把管理资源的任务转化为管理对象的任务，将资源的获取和释放与对象的构造和析构对应起来，从而确保在对象的生存期内资源始终有效，对象销毁时资源必被释放；这种技术还能令代码更加简洁（如果手动申请了大量的资源，无穷无尽的delete语句着实令人头疼）。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *resource= <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">  ...<span class="comment">//do something</span></span><br><span class="line">  ...<span class="comment">//do something</span></span><br><span class="line">  <span class="keyword">delete</span>[] resource;<span class="comment">//释放内存防止内存溢出</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如同标准做法，在申请了resource内存资源后，我们必须要对他进行释放。</p>
+<p>但是凡事都有例外，可能在函数内发生了一些小插曲：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">Func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> *resource= <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">   ...<span class="comment">//do something</span></span><br><span class="line">   <span class="keyword">if</span>(something_wrong_happen)</span><br><span class="line"><span class="keyword">return</span>;</span><br><span class="line">   ...<span class="comment">//do something</span></span><br><span class="line">   <span class="keyword">delete</span>[] resource;<span class="comment">//释放内存防止内存溢出</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>我们在未释放掉resource的情况下就结束了函数（或者是程序抛出了异常导致函数结束）。<br>要注意的是，和申请的局部变量不同，函数中使用了new而不delete，通常是不会释放的空间的：内存被new出来以后，有一个指针指向这个空间。malloc 或者 new申请的空间是在”堆”上的，平时我们都是用声明变量来申请空间的，此时申请到的空间是”栈”上的。<br>不管是在子函数中，或是在主函数中，都必须有一次delete来释放这个空间，如果没有做delete，即使退出程序，也无法回收这段内存了，内存就被泄露了。 </p>
+<p>又或者我们有这样的代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *resource1= <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">  <span class="keyword">int</span> *resource2= <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">9</span>];</span><br><span class="line">  <span class="keyword">int</span> *resource3= <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">666</span>];</span><br><span class="line">  <span class="comment">//.........</span></span><br><span class="line">  ...<span class="comment">//申请了成吨的资源空间</span></span><br><span class="line">  <span class="keyword">delete</span>[] resource3;</span><br><span class="line">  <span class="keyword">delete</span>[] resource2;</span><br><span class="line">  <span class="keyword">delete</span>[] resource1;</span><br><span class="line">  <span class="comment">//.........</span></span><br><span class="line">  ...<span class="comment">//根据需要释放某些内存（或者全部释放）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果绩效根据代码量来计算（什么破公司！），那么这样的代码确实很有用。但是这看起来十分的令人头疼，毕竟实际情况指针变量名可不是123这样排序的。</p>
+<p>这时候我们可以利用RAII技术——将将要申请的资源封装在类内：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">sizetype</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">Resource</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Resource(<span class="keyword">size_t</span> sz):size(sz) &#123;</span><br><span class="line">		data = <span class="keyword">new</span> sizetype[sz];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">			*(data + i) = i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">			<span class="built_in">cout</span>&lt;&lt;data[i]&lt;&lt;<span class="string">" "</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	~Resource() &#123;</span><br><span class="line">		<span class="keyword">while</span> (data) &#123;</span><br><span class="line">			<span class="keyword">delete</span>[] data;</span><br><span class="line">			data = <span class="literal">NULL</span>;</span><br><span class="line">			<span class="comment">//重要，为了安全，将data置NULL是为了防止以后的程序使用它，</span></span><br><span class="line">			<span class="comment">//防止delete以后可能出现的非法访问（野指针）</span></span><br><span class="line">			<span class="comment">//或者我们可以用share_ptr来代替他</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">// 禁止拷贝操作(拷贝构造和拷贝赋值都应该禁止)</span></span><br><span class="line">	Resource (Resource <span class="keyword">const</span>&amp;);</span><br><span class="line">	Resource&amp; <span class="keyword">operator</span> = (Resource <span class="keyword">const</span>&amp;) ;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	sizetype * data;</span><br><span class="line">	<span class="keyword">size_t</span> size;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>我们通常会禁止类对象之间进行相互拷贝或者拷贝构造，因为此类的对象代表一种资源，不具有复制的意义存在。</p>
+<p>在运用了RAII之后，我们就不再害怕函数内发生错误而导致提前的结束了。</p>
+<h3 id="使用我们的Resource类来管理资源"><a href="#使用我们的Resource类来管理资源" class="headerlink" title="使用我们的Resource类来管理资源"></a>使用我们的Resource类来管理资源</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	Resource&lt;<span class="keyword">int</span>&gt;res(<span class="number">3</span>);</span><br><span class="line">	res.create();</span><br><span class="line">	res.show();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，我们的资源已经如同局部对象一样：自动申请，自动释放。</p>
+<p>同样的方法我们也可以运用到对文件的操作：fopen(),fclose()上 或者 scope lock (局部锁技术)等等对内存的把握也一样严格的技术上，RAII会帮到我们许多。</p>
 
-const指针是指针变量的值一经初始化，就不可以改变指向，初始化是必要的。其定义形式如下：int * const pTwo;    //指向整形的常量指针 ，它不能在指向别的变量，但指向（变...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/18</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "指针，const">指针，const</a>
-    
-</div>
-            
-        </div>
     </article>
+    <!-- license  -->
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/11/17/C++ RBTree红黑树的实现/" title= "C++ RBTree红黑树的实现">
+                    <div class="nextTitle">C++ RBTree红黑树的实现</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/10/23/C++STL中的hash_map 哈希表/" title= "C++hash_map 哈希表">
+                    <div class="prevTitle">C++hash_map 哈希表</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
 </main>
             <!-- profile -->
             
@@ -469,6 +559,24 @@ const指针是指针变量的值一经初始化，就不可以改变指向，初
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RAII技术（资源获取即初始化——Resource-Acquisition-Is-Initialization）"><span class="toc-number">1.</span> <span class="toc-text">RAII技术（资源获取即初始化——Resource Acquisition Is Initialization）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#例子"><span class="toc-number">1.1.</span> <span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用我们的Resource类来管理资源"><span class="toc-number">1.1.1.</span> <span class="toc-text">使用我们的Resource类来管理资源</span></a></li></ol></li></ol></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -822,6 +930,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>

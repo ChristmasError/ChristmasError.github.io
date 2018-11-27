@@ -420,11 +420,11 @@ height:50vh;
 <li>获取元素的key值</li>
 <li>根据key值通过hash函数得到hash值</li>
 <li>得到该hash值的“桶”号</li>
-<li><p>将元素（key和value）存放在“桶”中</p>
+<li>将元素（key和value）存放在“桶”中</li>
+</ol>
 <p>而查找元素的步骤为：</p>
-</li>
-<li><p>获得key值</p>
-</li>
+<ol>
+<li>获得key值</li>
 <li>根据key值通过hash函数得到hash值</li>
 <li>得到相应的“桶”号</li>
 <li>比较桶内元素是否与key值相同</li>
@@ -446,7 +446,7 @@ height:50vh;
 <p>重载了stu数据结构的==之后，使用equal_to</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash_map&lt;<span class="built_in">string</span>, stu, MyHash,equal_to&lt;stu&gt;&gt; hashmap;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>equal_to的定义：<br>template \<class _tp\=""><br>struct equal_to : public binary_function&lt;_Tp,_Tp,bool&gt;<br>{<br>        bool operator()(const _Tp&amp; <strong>x, const _Tp&amp; </strong>y) const { return <strong>x == </strong>y; }<br>};</class></p>
+<p>equal_to的定义：<br>template \<class _tp\=""><br>struct equal_to : public binary_function&lt;_Tp,_Tp,bool&gt;<br>{<br>       bool operator()(const _Tp&amp; __x, const _Tp&amp; __y) const { return __x == __y; }<br>};</class></p>
 </blockquote>
 <p><strong>另一种方法，就是写一个函数对象</strong></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">compare_func</span>&#123;</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s1,<span class="keyword">const</span> <span class="keyword">char</span>* s2)</span> <span class="keyword">const</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">strcmp</span>(s1,s2)==<span class="number">0</span>;        </span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -472,6 +472,11 @@ height:50vh;
     <!-- paginator  -->
     <ul class="post-paginator">
         <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/11/04/C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）/" title= "C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）">
+                    <div class="nextTitle">C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）</div>
+                </a>
             
         </li>
         <li class="previous">
@@ -775,9 +780,19 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 12
+        Total : 14
         </div>
         <!-- search  -->
         
@@ -790,6 +805,16 @@ top:50vh;
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/17</span><a class="archive-post-title" href= "/2018/11/17/C++ RBTree红黑树的实现/" >C++ RBTree红黑树的实现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/04</span><a class="archive-post-title" href= "/2018/11/04/C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）/" >C++利用RAII技术让系统为我们管理资源（资源获取即初始化——Resource Acquisition Is Initialization）</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -858,21 +883,25 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="Lambda表达式 Lambda函数"><span class="iconfont-archer">&#xe606;</span>Lambda表达式 Lambda函数</span>
     
+        <span class="sidebar-tag-name" data-tags="C++ 红黑树 数据结构 RBTree"><span class="iconfont-archer">&#xe606;</span>C++ 红黑树 数据结构 RBTree</span>
+    
+        <span class="sidebar-tag-name" data-tags="hash_map 哈希表"><span class="iconfont-archer">&#xe606;</span>hash_map 哈希表</span>
+    
+        <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
+    
+        <span class="sidebar-tag-name" data-tags="RAII"><span class="iconfont-archer">&#xe606;</span>RAII</span>
+    
+        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
+    
         <span class="sidebar-tag-name" data-tags="很基础的Markdown语法及其效果演示"><span class="iconfont-archer">&#xe606;</span>很基础的Markdown语法及其效果演示</span>
     
         <span class="sidebar-tag-name" data-tags="这是建立个人Blog来的第一篇测试博客"><span class="iconfont-archer">&#xe606;</span>这是建立个人Blog来的第一篇测试博客</span>
     
         <span class="sidebar-tag-name" data-tags="《深入了解计算机系统》"><span class="iconfont-archer">&#xe606;</span>《深入了解计算机系统》</span>
     
-        <span class="sidebar-tag-name" data-tags="智能指针"><span class="iconfont-archer">&#xe606;</span>智能指针</span>
-    
-        <span class="sidebar-tag-name" data-tags="指针，const"><span class="iconfont-archer">&#xe606;</span>指针，const</span>
-    
-        <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
-    
         <span class="sidebar-tag-name" data-tags="leetcode刷题笔记"><span class="iconfont-archer">&#xe606;</span>leetcode刷题笔记</span>
     
-        <span class="sidebar-tag-name" data-tags="hash_map 哈希表"><span class="iconfont-archer">&#xe606;</span>hash_map 哈希表</span>
+        <span class="sidebar-tag-name" data-tags="STL学习笔记"><span class="iconfont-archer">&#xe606;</span>STL学习笔记</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
